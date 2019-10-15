@@ -586,6 +586,8 @@ With prefix ARG ask for extra args."
              "* TODO %?\n  %i")
             ("a" "AMP-AD tasks" entry (file+headline "~/todo.org" "AMP-AD")
              "* TODO %?\n  %i")
+            ("f" "FHS tasks" entry (file+headline "~/todo.org" "FHS")
+             "* TODO %?\n  %i")
             ("p" "PsychENCODE tasks" entry (file+headline "~/todo.org" "PsychENCODE")
              "* TODO %?\n  %i")
             ("c" "Culture committee tasks" entry (file+headline "~/todo.org" "Culture committee")
