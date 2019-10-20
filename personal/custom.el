@@ -637,7 +637,7 @@ With prefix ARG ask for extra args."
 ;; Function to export markdown, LaTeX, and PDF simultaneously
 (defun org-export-mtp ()
   (interactive)
-  (org-pandoc-export-to-markdown_github)
+  (org-pandoc-export-to-markdown)
   (org-latex-export-to-pdf))
 
 ;; Collapse emphasis marks in org mode
