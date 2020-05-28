@@ -56,6 +56,7 @@
                             polymode
                             projectile
                             pyvenv
+                            ruby-mode
                             twittering-mode
                             undo-tree
                             wgrep
@@ -828,8 +829,38 @@ With prefix ARG ask for extra args."
 (require 'ein-notebook)
 (define-key ein:notebook-mode-map (kbd "M-<return>") 'ein:worksheet-execute-cell-and-goto-next)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;                                  Tramp                                  ;;;;
+;;;;                                ruby-mode                               ;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'ruby-mode)
+
+(add-to-list 'auto-mode-alist
+             '("\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
+
+;; Ruby mode
+(add-hook 'ruby-mode-hook 'robe-mode)
+(add-hook 'ruby-mode-hook 'company-mode)
+(add-hook 'ruby-mode-hook 'electric-pair-mode)
+
+(require 'rspec-mode)
+(eval-after-load 'rspec-mode '(rspec-install-snippets))
+
+;; Bundler
+(define-key ruby-mode-map (kbd "C-c TAB") 'bundle-install)
+(define-key ruby-mode-map (kbd "C-c C-e") 'bundle-exec)
+(define-key ruby-mode-map (kbd "C-c C-u") 'bundle-console)
+
+;; Guard
+(define-key ruby-mode-map (kbd "C-c C-g") 'ruby-guard)
+
+(setq inf-ruby-default-implementation "pry")
+(add-hook 'after-init-hook 'inf-ruby-switch-setup)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;                                  Tramp                                 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq tramp-verbose 1)
