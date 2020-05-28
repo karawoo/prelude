@@ -799,10 +799,7 @@ With prefix ARG ask for extra args."
       python-shell-interpreter-args "-i --simple-prompt")
 
 ;; Python environments
-(if (work-computer)
-    (setenv "WORKON_HOME" "/Users/kwoo/envs")
-  setenv "WORKON_HOME" "/Users/Kara/anaconda/envs")
-(pyvenv-mode 1)
+(setenv "WORKON_HOME" "/Users/kwoo/envs")
 
 ;; Use Django-style docstrings
 (setq python-fill-docstring-style 'django)
