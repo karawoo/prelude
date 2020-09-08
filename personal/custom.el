@@ -584,9 +584,9 @@ With prefix ARG ask for extra args."
     (setq org-capture-templates
           '(("t" "General TODOs" entry (file+headline "~/todo.org" "General tasks")
              "* TODO %?\n  %i")
-            ("a" "AMP-AD tasks" entry (file+headline "~/todo.org" "AMP-AD")
+            ("i" "Sys Bio Infrastructure" entry (file+headline "~/todo.org" "Sys Bio Infrastructure")
              "* TODO %?\n  %i")
-            ("f" "FHS tasks" entry (file+headline "~/todo.org" "FHS")
+            ("a" "AMP-AD tasks" entry (file+headline "~/todo.org" "AMP-AD")
              "* TODO %?\n  %i")
             ("m" "Mouse Agora tasks" entry (file+headline "~/todo.org" "Magora")
              "* TODO %?\n  %i")
