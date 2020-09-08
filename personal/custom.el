@@ -5,21 +5,18 @@
  ;; If there is more than one, they won't work right.
  '(company-quickhelp-color-background "#4F4F4F")
  '(company-quickhelp-color-foreground "#DCDCCC")
- '(custom-enabled-themes (quote (sanityinc-tomorrow-night)))
+ '(custom-enabled-themes '(sanityinc-tomorrow-night))
  '(custom-safe-themes
-   (quote
-    ("06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default)))
+   '("06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default))
  '(jabber-resource-line-format "     %r - %s")
  '(magit-diff-use-overlays nil)
  '(magit-use-overlays nil)
  '(nrepl-message-colors
-   (quote
-    ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
- '(org-agenda-files (quote ("~/todo.org")))
+   '("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3"))
+ '(org-agenda-files '("~/todo.org"))
  '(package-selected-packages
-   (quote
-    (dockerfile-mode bundler rubocop robe inf-ruby rspec-mode poly-markdown poly-noweb poly-R julia-mode helm projectile ws-butler uuid editorconfig zop-to-char zenburn-theme yaml-mode which-key wgrep volatile-highlights vkill twittering-mode smex smartrep smartparens smart-mode-line scss-mode rainbow-mode rainbow-delimiters polymode php-mode ox-pandoc ox-gfm ov org-ref operate-on-number mu4e-maildirs-extension move-text markdown-mode magit key-combo json-mode jabber imenu-anywhere helm-projectile helm-descbinds helm-ag guru-mode grizzl god-mode gitignore-mode gitconfig-mode git-timemachine gist geiser flycheck flx-ido floobits expand-region exec-path-from-shell ess emoji-cheat-sheet-plus elpy elisp-slime-nav ein easy-kill discover-my-major diminish diff-hl csv-mode crux company-auctex company-anaconda color-theme-sanityinc-tomorrow cdlatex browse-kill-ring beacon anzu ace-window ac-emoji)))
- '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838"))))
+   '(dockerfile-mode bundler rubocop robe inf-ruby rspec-mode poly-markdown poly-noweb poly-R julia-mode helm projectile ws-butler uuid editorconfig zop-to-char zenburn-theme yaml-mode which-key wgrep volatile-highlights vkill twittering-mode smex smartrep smartparens smart-mode-line scss-mode rainbow-mode rainbow-delimiters polymode php-mode ox-pandoc ox-gfm ov org-ref operate-on-number mu4e-maildirs-extension move-text markdown-mode magit key-combo json-mode jabber imenu-anywhere helm-projectile helm-descbinds helm-ag guru-mode grizzl god-mode gitignore-mode gitconfig-mode git-timemachine gist geiser flycheck flx-ido floobits expand-region exec-path-from-shell ess emoji-cheat-sheet-plus elpy elisp-slime-nav ein easy-kill discover-my-major diminish diff-hl csv-mode crux company-auctex company-anaconda color-theme-sanityinc-tomorrow cdlatex browse-kill-ring beacon anzu ace-window ac-emoji))
+ '(pdf-view-midnight-colors '("#DCDCCC" . "#383838")))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -749,7 +746,7 @@ With prefix ARG ask for extra args."
 (setq reftex-default-bibliography '("~/references.bib"))
 
 ;; Set default bibliography for helm
-(setq helm-bibtex-bibliography "~/references.bib")
+(setq bibtex-completion-bibliography "~/references.bib")
 
 ;; Use citep by default (instead of cite)
 ;; (setq org-ref-default-citation-link "citep")
