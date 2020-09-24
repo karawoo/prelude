@@ -582,9 +582,11 @@ With prefix ARG ask for extra args."
 
 (if (work-computer)
     (setq org-capture-templates
-          '(("t" "General TODOs" entry (file+headline "~/todo.org" "General tasks")
+          '(("g" "General TODOs" entry (file+headline "~/todo.org" "General tasks")
              "* TODO %?\n  %i")
             ("i" "Sys Bio Infrastructure" entry (file+headline "~/todo.org" "Sys Bio Infrastructure")
+             "* TODO %?\n  %i")
+            ("t" "TREAT-AD tasks" entry (file+headline "~/todo.org" "TREAT-AD")
              "* TODO %?\n  %i")
             ("a" "AMP-AD tasks" entry (file+headline "~/todo.org" "AMP-AD")
              "* TODO %?\n  %i")
@@ -787,7 +789,7 @@ With prefix ARG ask for extra args."
             (setq python-indent 4)))
 
 ;; Use Elpy
-(package-initialize)
+;; (package-initialize)
 (elpy-enable)
 
 ;; Use IPython interpreter
