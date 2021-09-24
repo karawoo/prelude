@@ -28,6 +28,10 @@
 ;; Package repositories
 (require 'package)
 
+;; This makes package refresh work https://emacs.stackexchange.com/a/56067
+(custom-set-variables
+ '(gnutls-algorithm-priority "normal:-vers-tls1.3"))
+
 ;; (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 ;; (add-to-list 'package-archives '("elpy" . "https://jorgenschaefer.github.io/packages/"))
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
