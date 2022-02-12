@@ -8,6 +8,7 @@
  '(custom-enabled-themes '(sanityinc-tomorrow-night))
  '(custom-safe-themes
    '("06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default))
+ '(gnutls-algorithm-priority "normal:-vers-tls1.3")
  '(jabber-resource-line-format "     %r - %s")
  '(magit-diff-use-overlays nil)
  '(magit-use-overlays nil)
@@ -27,10 +28,6 @@
 
 ;; Package repositories
 (require 'package)
-
-;; This makes package refresh work https://emacs.stackexchange.com/a/56067
-(custom-set-variables
- '(gnutls-algorithm-priority "normal:-vers-tls1.3"))
 
 ;; (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 ;; (add-to-list 'package-archives '("elpy" . "https://jorgenschaefer.github.io/packages/"))
