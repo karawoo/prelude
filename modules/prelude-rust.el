@@ -1,8 +1,6 @@
 ;;; prelude-rust.el --- Emacs Prelude: Rust programming support.
 ;;
 ;; Authors: Doug MacEachern, Manoel Vilela, Ben Alex
-;; Version: 1.0.1
-;; Keywords: convenience rust
 
 ;; This file is not part of GNU Emacs.
 
@@ -31,7 +29,7 @@
 
 (require 'prelude-programming)
 
-;; You may need installing the following packages on your system:
+;; You may need to install the following packages on your system:
 ;; * rustc (Rust Compiler)
 ;; * cargo (Rust Package Manager)
 ;; * racer (Rust Completion Tool)
@@ -39,30 +37,29 @@
 ;; * rls (Rust Language Server, if the prelude-lsp feature is enabled)
 
 (prelude-require-packages '(rust-mode
-                            cargo))
+                            cargo
+                            flycheck-rust
+                            ron-mode))
 
-(if (featurep 'prelude-lsp)
-    (prelude-require-package 'lsp-rust)
-  (prelude-require-packages '(racer
-                              flycheck-rust)))
+(unless (featurep 'prelude-lsp)
+  (prelude-require-packages '(racer)))
 
 (setq rust-format-on-save t)
-(setq lsp-rust-rls-command '("rustup" "run" "stable" "rls"))
 
 (with-eval-after-load 'rust-mode
   (add-hook 'rust-mode-hook 'cargo-minor-mode)
+  (add-hook 'flycheck-mode-hook 'flycheck-rust-setup)
 
   (if (featurep 'prelude-lsp)
-      (progn (require 'lsp-rust)
-             (add-hook 'rust-mode-hook #'lsp-rust-enable))
+      (add-hook 'rust-mode-hook 'lsp)
     (add-hook 'rust-mode-hook 'racer-mode)
-    (add-hook 'racer-mode-hook 'eldoc-mode)
-    (add-hook 'rust-mode-hook 'flycheck-rust-setup)
-    (add-hook 'flycheck-mode-hook 'flycheck-rust-setup))
+    (add-hook 'racer-mode-hook 'eldoc-mode))
 
   (defun prelude-rust-mode-defaults ()
     (unless (featurep 'prelude-lsp)
-      (local-set-key (kbd "C-c C-d") 'racer-describe))
+      (local-set-key (kbd "C-c C-d") 'racer-describe)
+      (local-set-key (kbd "C-c .") 'racer-find-definition)
+      (local-set-key (kbd "C-c ,") 'pop-tag-mark))
 
     ;; Prevent #! from chmodding rust files to be executable
     (remove-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)

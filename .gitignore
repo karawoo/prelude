@@ -27,3 +27,8 @@ network-security.data
 prelude-cheatsheet.el
 prelude-cheatsheet.aux
 prelude-cheatsheet.log
+transient/
+var/
+.cache/
+.lsp-session*
+gotools/

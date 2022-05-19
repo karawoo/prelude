@@ -1,0 +1,34 @@
+site_name: "Prelude: A sleek, modern, simple and powerful Emacs experience for everyone"
+repo_url: https://github.com/bbatsov/prelude
+copyright: "Copyright (C) 2011-2021 Bozhidar Batsov and Prelude contributors"
+docs_dir: docs
+nav:
+- Home: index.md
+- Installation: installation.md
+- Usage: usage.md
+- Configuration: configuration.md
+- Modules:
+    - Overview: modules/index.md
+    - Company: modules/company.md
+    - ERC: modules/erc.md
+    - Programming: modules/programming.md
+    - Lisp: modules/lisp.md
+    - Emacs Lisp: modules/emacs_lisp.md
+    - Common Lisp: modules/common_lisp.md
+    - Scheme: modules/scheme.md
+    - Clojure: modules/clojure.md
+    - Dart: modules/dart.md
+    - Python: modules/python.md
+    - Ruby: modules/ruby.md
+    - Rust: modules/rust.md
+    - F#: modules/fsharp.md
+    - Go: modules/go.md
+- FAQ: faq.md
+- Troubleshooting: troubleshooting.md
+- Contributing: contributing.md
+- Support: support.md
+extra_css:
+  - css/extra.css
+markdown_extensions:
+  - admonition
+theme: readthedocs

@@ -1,18 +1,17 @@
 ;;; prelude-packages.el --- Emacs Prelude: default package selection.
 ;;
-;; Copyright © 2011-2018 Bozhidar Batsov
+;; Copyright © 2011-2021 Bozhidar Batsov
 ;;
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/prelude
-;; Version: 1.0.0
-;; Keywords: convenience
 
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
 
 ;; Takes care of the automatic installation of all the packages required by
-;; Emacs Prelude.
+;; Emacs Prelude.  This module also adds a couple of package.el extensions
+;; and provides functionality for auto-installing major modes on demand.
 
 ;;; License:
 
@@ -32,8 +31,10 @@
 ;; Boston, MA 02110-1301, USA.
 
 ;;; Code:
-(require 'cl)
+(require 'cl-lib)
 (require 'package)
+
+;;;; Package setup and additional utility functions
 
 ;; accessing a package repo over https on Windows is a no go, so we
 ;; fallback to http there
@@ -54,9 +55,9 @@
 
 (defvar prelude-packages
   '(ace-window
+    ag
     avy
     anzu
-    beacon
     browse-kill-ring
     crux
     discover-my-major
@@ -69,14 +70,14 @@
     flycheck
     gist
     git-timemachine
-    gitconfig-mode
-    gitignore-mode
+    git-modes
     guru-mode
     hl-todo
     imenu-anywhere
     projectile
     magit
     move-text
+    nlinum
     operate-on-number
     smartparens
     smartrep
@@ -90,7 +91,7 @@
 
 (defun prelude-packages-installed-p ()
   "Check if all packages in `prelude-packages' are installed."
-  (every #'package-installed-p prelude-packages))
+  (cl-every #'package-installed-p prelude-packages))
 
 (defun prelude-require-package (package)
   "Install PACKAGE unless already installed."
@@ -103,8 +104,6 @@
   "Ensure PACKAGES are installed.
 Missing packages are installed automatically."
   (mapc #'prelude-require-package packages))
-
-(define-obsolete-function-alias 'prelude-ensure-module-deps 'prelude-require-packages)
 
 (defun prelude-install-packages ()
   "Install all packages listed in `prelude-packages'."
@@ -127,7 +126,9 @@ are installed and are not in `prelude-packages'.  Useful for
 removing unwanted packages."
   (interactive)
   (package-show-package-list
-   (set-difference package-activated-list prelude-packages)))
+   (cl-set-difference package-activated-list prelude-packages)))
+
+;;;; Auto-installation of major modes on demand
 
 (defmacro prelude-auto-install (extension package mode)
   "When file with EXTENSION is opened triggers auto-install of PACKAGE.
@@ -139,7 +140,11 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
                                  (,mode)))))
 
 (defvar prelude-auto-install-alist
-  '(("\\.clj\\'" clojure-mode clojure-mode)
+  '(("\\.adoc\\'" adoc-mode adoc-mode)
+    ("\\.clj\\'" clojure-mode clojure-mode)
+    ("\\.cljc\\'" clojure-mode clojurec-mode)
+    ("\\.cljs\\'" clojure-mode clojurescript-mode)
+    ("\\.edn\\'" clojure-mode clojure-mode)
     ("\\.cmake\\'" cmake-mode cmake-mode)
     ("CMakeLists\\.txt\\'" cmake-mode cmake-mode)
     ("\\.coffee\\'" coffee-mode coffee-mode)
@@ -159,6 +164,7 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
     ("\\.groovy\\'" groovy-mode groovy-mode)
     ("\\.haml\\'" haml-mode haml-mode)
     ("\\.hs\\'" haskell-mode haskell-mode)
+    ("\\.jl\\'" julia-mode julia-mode)
     ("\\.json\\'" json-mode json-mode)
     ("\\.kt\\'" kotlin-mode kotlin-mode)
     ("\\.kv\\'" kivy-mode kivy-mode)
@@ -175,6 +181,7 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
     ("\\.pyi\\'" cython-mode cython-mode)
     ("\\.pyx\\'" cython-mode cython-mode)
     ("PKGBUILD\\'" pkgbuild-mode pkgbuild-mode)
+    ("\\.rkt\\'" racket-mode racket-mode)
     ("\\.rs\\'" rust-mode rust-mode)
     ("\\.sass\\'" sass-mode sass-mode)
     ("\\.scala\\'" scala-mode scala-mode)
@@ -194,6 +201,12 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
   (add-to-list 'auto-mode-alist '("\\.markdown\\'" . gfm-mode))
   (add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode)))
 
+;; same with adoc-mode
+(when (package-installed-p 'adoc-mode)
+  (add-to-list 'auto-mode-alist '("\\.adoc\\'" . adoc-mode))
+  (add-to-list 'auto-mode-alist '("\\.asciidoc\\'" . adoc-mode)))
+
+;; and pkgbuild-mode
 (when (package-installed-p 'pkgbuild-mode)
   (add-to-list 'auto-mode-alist '("PKGBUILD\\'" . pkgbuild-mode)))
 

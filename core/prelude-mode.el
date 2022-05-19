@@ -1,11 +1,9 @@
 ;;; prelude-mode.el --- Emacs Prelude: minor mode
 ;;
-;; Copyright © 2011-2018 Bozhidar Batsov
+;; Copyright © 2011-2021 Bozhidar Batsov
 ;;
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/prelude
-;; Version: 1.0.0
-;; Keywords: convenience
 
 ;; This file is not part of GNU Emacs.
 
@@ -38,10 +36,10 @@
 (defvar prelude-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c o") 'crux-open-with)
-    (define-key map (kbd "C-c g") 'prelude-google)
-    (define-key map (kbd "C-c G") 'prelude-github)
-    (define-key map (kbd "C-c y") 'prelude-youtube)
-    (define-key map (kbd "C-c U") 'prelude-duckduckgo)
+    (define-key map (kbd "C-c C-/ g") 'prelude-google)
+    (define-key map (kbd "C-c C-/ h") 'prelude-github)
+    (define-key map (kbd "C-c C-/ y") 'prelude-youtube)
+    (define-key map (kbd "C-c C-/ d") 'prelude-duckduckgo)
     ;; mimic popular IDEs binding, note that it doesn't work in a terminal session
     (define-key map (kbd "C-a") 'crux-move-beginning-of-line)
     (define-key map [(shift return)] 'crux-smart-open-line)
@@ -68,17 +66,24 @@
     (define-key map (kbd "C-c S") 'crux-find-shell-init-file)
     (define-key map (kbd "C-c i") 'imenu-anywhere)
     ;; extra prefix for projectile
-    (define-key map (kbd "s-p") 'projectile-command-map)
+    (when prelude-super-keybindings
+     (define-key map (kbd "s-p") 'projectile-command-map))
     (define-key map (kbd "C-c p") 'projectile-command-map)
     ;; make some use of the Super key
-    (define-key map (kbd "s-r") 'crux-recentf-find-file)
-    (define-key map (kbd "s-j") 'crux-top-join-line)
-    (define-key map (kbd "s-k") 'crux-kill-whole-line)
-    (define-key map (kbd "s-m m") 'magit-status)
-    (define-key map (kbd "s-m l") 'magit-log)
-    (define-key map (kbd "s-m f") 'magit-log-buffer-file)
-    (define-key map (kbd "s-m b") 'magit-blame)
-    (define-key map (kbd "s-o") 'crux-smart-open-line-above)
+    (when prelude-super-keybindings
+      ;; crux
+      (define-key map (kbd "s-r") 'crux-recentf-find-file)
+      (define-key map (kbd "s-j") 'crux-top-join-line)
+      (define-key map (kbd "s-k") 'crux-kill-whole-line)
+      (define-key map (kbd "s-o") 'crux-smart-open-line-above)
+      ;; magit
+      (define-key map (kbd "s-m m") 'magit-status)
+      (define-key map (kbd "s-m j") 'magit-dispatch)
+      (define-key map (kbd "s-m k") 'magit-file-dispatch)
+      (define-key map (kbd "s-m l") 'magit-log-buffer-file)
+      (define-key map (kbd "s-m b") 'magit-blame)
+      ;; misc
+      (define-key map (kbd "s-/") 'hippie-expand))
     (easy-menu-define prelude-mode-menu map
       "Prelude's menu."
       '("Prelude"
@@ -98,7 +103,7 @@
          ["Kill line" crux-smart-kill-line]
          ["Kill whole line" crux-kill-whole-line]
          ["Insert empty line below" crux-smart-open-line]
-         ["insert empty line above" crux-smart-open-line-above]
+         ["Insert empty line above" crux-smart-open-line-above]
          ["Move up" move-text-up]
          ["Move down" move-text-down]
          ["Duplicate line or region" crux-duplicate-current-line-or-region]

@@ -1,8 +1,7 @@
 ;;; prelude-go.el --- Emacs Prelude: Go programming support.
 ;;
 ;; Author: Doug MacEachern
-;; Version: 1.0.0
-;; Keywords: convenience go
+;; URL: https://github.com/bbatsov/prelude
 
 ;; This file is not part of GNU Emacs.
 
@@ -30,11 +29,13 @@
 ;;; Code:
 
 (require 'prelude-programming)
+(require 'prelude-lsp)
 
 (prelude-require-packages '(go-mode
-                            company-go
-                            go-eldoc
                             go-projectile
+                            lsp-mode
+                            lsp-ui
+                            company
                             gotest))
 
 (require 'go-projectile)
@@ -59,23 +60,25 @@
       (when goimports
         (setq gofmt-command goimports)))
 
-    ;; gofmt on save
-    (add-hook 'before-save-hook 'gofmt-before-save nil t)
-
     ;; stop whitespace being highlighted
     (whitespace-toggle-options '(tabs))
-
-    ;; Company mode settings
-    (set (make-local-variable 'company-backends) '(company-go))
-
-    ;; El-doc for Go
-    (go-eldoc-setup)
 
     ;; CamelCase aware editing operations
     (subword-mode +1))
 
-  (setq prelude-go-mode-hook 'prelude-go-mode-defaults)
+  ;; if yas is present, this enables yas-global-mode
+  ;; which provides completion via company
+  (if (fboundp 'yas-global-mode)
+      (yas-global-mode))
 
+  ;; configure lsp for go
+  (defun lsp-go-install-save-hooks ()
+    (add-hook 'before-save-hook #'lsp-format-buffer t t)
+    (add-hook 'before-save-hook #'lsp-organize-imports t t))
+  (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+  (add-hook 'go-mode-hook #'lsp-deferred)
+
+  (setq prelude-go-mode-hook 'prelude-go-mode-defaults)
   (add-hook 'go-mode-hook (lambda ()
                             (run-hooks 'prelude-go-mode-hook))))
 
