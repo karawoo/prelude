@@ -59,6 +59,7 @@
                             ruby-mode
                             twittering-mode
                             undo-tree
+                            use-package
                             wgrep
                             ws-butler))
 
@@ -296,6 +297,19 @@ With prefix ARG ask for extra args."
    "shiny::runApp(\".\")\n" "Running app" arg
    '("" (read-string "Arguments: " "recompile = TRUE"))))
 
+
+(use-package xterm-color
+             :load-path "/Users/kara/projects/forks/xterm-color/"
+
+             :init
+             (setq comint-output-filter-functions
+                   (remove 'ansi-color-process-output comint-output-filter-functions))
+
+             (add-hook 'inferior-ess-mode-hook
+                       (lambda () (add-hook 'comint-preoutput-filter-functions #'xterm-color-filter nil t)))
+
+             :config
+             (setq xterm-color-use-bold t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;                            Google Translate                            ;;;;
