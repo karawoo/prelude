@@ -598,16 +598,6 @@ With prefix ARG ask for extra args."
 (if (work-computer)
     (setq org-capture-templates
           '(("g" "General TODOs" entry (file+headline "~/todo.org" "General tasks")
-             "* TODO %?\n  %i")
-            ("i" "Sys Bio Infrastructure" entry (file+headline "~/todo.org" "Sys Bio Infrastructure")
-             "* TODO %?\n  %i")
-            ("t" "TREAT-AD tasks" entry (file+headline "~/todo.org" "TREAT-AD")
-             "* TODO %?\n  %i")
-            ("a" "AMP-AD tasks" entry (file+headline "~/todo.org" "AMP-AD")
-             "* TODO %?\n  %i")
-            ("m" "Mouse Agora tasks" entry (file+headline "~/todo.org" "Magora")
-             "* TODO %?\n  %i")
-            ("w" "Metadata WG tasks" entry (file+headline "~/todo.org" "Schemas/metadata working group")
              "* TODO %?\n  %i"))))
 
 ;; Add smartparens options
