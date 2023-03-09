@@ -6,7 +6,6 @@
  '(company-quickhelp-color-background "#4F4F4F")
  '(company-quickhelp-color-foreground "#DCDCCC")
  '(gnutls-algorithm-priority "normal:-vers-tls1.3")
- '(jabber-resource-line-format "     %r - %s")
  '(magit-diff-use-overlays nil)
  '(magit-use-overlays nil)
  '(nrepl-message-colors
@@ -26,8 +25,6 @@
 ;; Package repositories
 (require 'package)
 
-;; (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
-;; (add-to-list 'package-archives '("elpy" . "https://jorgenschaefer.github.io/packages/"))
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")
                          ("org" . "https://orgmode.org/elpa/")
@@ -35,13 +32,10 @@
 
 
 (prelude-require-packages '(anzu
-                            ein
                             emoji-cheat-sheet-plus
                             elpy
                             ess
-                            floobits
                             inf-ruby
-                            jabber
                             key-combo
                             markdown-mode
                             org
@@ -53,8 +47,6 @@
                             pyvenv
                             rspec-mode
                             ruby-mode
-                            twittering-mode
-                            undo-tree
                             use-package
                             wgrep
                             ws-butler))
@@ -183,8 +175,7 @@ sentence. Otherwise kill forward but preserve any punctuation at the sentence en
 ;; Timezones
 (setq display-time-world-list
       '(("America/Los_Angeles" "Pacific")
-        ("America/New_York" "Eastern")
-        ("Asia/Irkutsk" "Irkutsk")))
+        ("America/New_York" "Eastern")))
 
 ;; Smoother scrolling
 ;; http://www.emacswiki.org/emacs/SmoothScrolling
@@ -308,49 +299,11 @@ With prefix ARG ask for extra args."
              (setq xterm-color-use-bold t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;                            Google Translate                            ;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(setq google-translate-translation-directions-alist '(("ru" . "en") ("en" . "ru")))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;                                  Helm                                  ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Give me my damn tab completion
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;                                 Jabber                                 ;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Set up google talk
-(setq jabber-account-list
-      '(("woo.kara@gmail.com"
-         (:network-server . "talk.google.com")
-         (:connection-type . ssl)
-         (:port . 443))))
-
-;; No avatars, please
-(setq jabber-avatar-verbose nil
-      jabber-vcard-avatars-retrieve nil)
-
-(setq jabber-roster-line-format " %c %n - %s")
-
-;; Don't show status changes in minibuffer
-(setq jabber-alert-presence-message-function nil)
-
-;; Enable history
-(setq jabber-history-enabled nil)
-
-;; Shorten buffer names
-(setq jabber-chat-buffer-format "*-jabber-%n-*"
-      jabber-roster-buffer "*-jabber-*")
-
-;; View emoji in jabber
-(add-hook 'jabber-chat-mode-hook (lambda () (emoji-cheat-sheet-plus-display-mode)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -395,175 +348,6 @@ With prefix ARG ask for extra args."
           (lambda ()
             (make-local-variable 'prelude-clean-whitespace-on-save)
             (setq-local prelude-clean-whitespace-on-save nil)))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;                                  mu4e                                  ;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;; Thanks @gastove :D
-
-;; ;;; Commentary:
-;; ;; Borrowed, gratefully, from
-;; ;; http://kirang.in/2014/11/13/emacs-as-email-client-with-offlineimap-and-mu4e-on-osx/
-;; ;;; Code:
-
-;; ;; If I want multiple accounts, need to manage these:
-;; ;; (setq mu4e-sent-folder "/Account1/Saved Items" ;; check
-;; ;;      mu4e-drafts-folder "/Account1/Drafts"     ;; check
-;; ;;      user-mail-address "my.address@account1.tld" ;; check
-;; ;;      smtpmail-default-smtp-server "smtp.account1.tld" ;; check
-;; ;;      smtpmail-local-domain "account1.tld"
-;; ;;      smtpmail-smtp-server "smtp.account1.tld" ;; check
-;; ;;      smtpmail-stream-type starttls
-;; ;;      smtpmail-smtp-service 25)
-
-;; ;; Re-enable C-x m for email (nerfs eshell, which I never use)
-;; (global-set-key (kbd "C-x m") 'compose-mail)
-
-;; (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-;; (require 'mu4e)
-;; (setq mu4e-maildir "~/.mail")
-;; (setq mu4e-drafts-folder "/woo.kara@gmail.com/[Gmail].Drafts")
-;; (setq mu4e-sent-folder   "/woo.kara@gmail.com/[Gmail].Sent Mail")
-;; ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
-;; (setq mu4e-sent-messages-behavior 'delete)
-;; ;; allow for updating mail using 'U' in the main view:
-;; (setq mu4e-get-mail-command "offlineimap")
-
-;; ;; Make mu4e the default user agent
-;; (setq mail-user-agent 'mu4e-user-agent)
-
-;; ;; mu4e mail dirs
-;; (require 'mu4e-maildirs-extension)
-;; (mu4e-maildirs-extension)
-
-;; ;; shortcuts
-;; (setq mu4e-maildir-shortcuts
-;;       '(("/woo.kara@gmail.com/INBOX"               . ?i)
-;;         ("/woo.kara@gmail.com/[Gmail].Important"   . ?I)
-;;         ("/woo.kara@gmail.com/[Gmail].Sent Mail"   . ?s)))
-
-;; ;; something about ourselves
-;; (setq user-mail-address "woo.kara@gmail.com"
-;;       user-full-name  "Kara Woo")
-
-;; ;; ISO date format
-;; (setq mu4e-headers-date-format "%Y-%m-%d")
-
-;; ;; The next two things are supposed to help show inline images in emails but
-;; ;; Ross says they don't work so much
-;; ;; show images
-;; (setq mu4e-show-images t)
-
-;; ;; use imagemagick, if available
-;; (when (fboundp 'imagemagick-register-types)
-;;   (imagemagick-register-types))
-
-;; ;; convert html emails properly
-;; ;; Possible options:
-;; ;;   - html2text -utf8 -width 72
-;; ;;   - textutil -stdin -format html -convert txt -stdout
-;; ;;   - html2markdown | grep -v '&nbsp_place_holder;' (Requires html2text pypi)
-;; ;;   - w3m -dump -cols 80 -T text/html
-;; ;;   - view in browser (provided below)
-;; ;; (setq mu4e-html2text-command "textutil -stdin -format html -convert txt -stdout")
-;; ;; (setq mu4e-html2text-command "pandoc -f html -t plain")
-;; (require 'mu4e-contrib)
-;; (setq mu4e-html2text-command 'mu4e-shr2text)
-
-;; ;; Message Composition settings: turn off auto-fill-mode
-;; (add-hook 'mu4e-compose-mode-hook
-;;           (lambda ()
-;;             (auto-fill-mode -1)
-;;             ))
-
-;; ;; add option to view html message in a browser
-;; ;; `aV` in view to activate
-;; (add-to-list 'mu4e-view-actions
-;;              '("ViewInBrowser" . mu4e-action-view-in-browser) t)
-
-;; ;; fetch mail every 10 mins
-;; (setq mu4e-update-interval 600)
-
-;; ;; configuration for sending mail
-;; (setq message-send-mail-function
-;;       'sendmail-send-it
-;;       ;; smtpmail-stream-type 'starttls
-;;       smtpmail-default-smtp-server "smtp.gmail.com"
-;;       smtpmail-smtp-server "smtp.gmail.com"
-;;       smtpmail-smtp-service 587
-;;       smtpmail-smtp-user "woo.kara"
-;;       smtpmail-mail-address "woo.kara@gmail.com"
-;;       mail-specify-envelope-from t
-;;       mail-envelope-from 'header
-;;       )
-
-;; ;; Tweak bookmarked queries
-;; (add-to-list 'mu4e-bookmarks `(,(string-join
-;;                                  '("flag:unread"
-;;                                    "AND m:/woo.kara@gmail.com/INBOX"
-;;                                    "NOT maildir:'/woo.kara@gmail.com/github'"
-;;                                    "NOT maildir:'/woo.kara@gmail.com/Brown'"
-;;                                    "NOT maildir:'/woo.kara@gmail.com/Lists'"
-;;                                    "AND date:today..now")
-;;                                  " ") "Today's personal Unreads" ?h))
-;; (add-to-list 'mu4e-bookmarks `(,(string-join
-;;                                  '("flag:unread"
-;;                                    "AND date:today..now"
-;;                                    "NOT maildir:'/woo@nceas.ucsb.edu/Ecolog'"
-;;                                    "NOT maildir:'/woo@nceas.ucsb.edu/Redmine'"
-;;                                    "AND m:/woo@nceas.ucsb.edu/INBOX")
-;;                                  " ")
-;;                                "Today's work unreads" ?i))
-;; (add-to-list 'mu4e-bookmarks `(,(string-join
-;;                                  '("flag:unread"
-;;                                    "AND m:/woo.kara@gmail.com/INBOX"
-;;                                    "AND date:today..now"
-;;                                    "OR flag:unread"
-;;                                    "AND m:/woo@nceas.ucsb.edu/INBOX"
-;;                                    "AND date:today..now")
-;;                                  " ") "Today's Unreads" ?g))
-
-;; ;; Switch accounts
-
-;; (defvar my-mu4e-account-alist
-;;   '(("woo.kara@gmail.com"
-;;      (mu4e-drafts-folder "/woo.kara@gmail.com/[Gmail].Drafts")
-;;      (mu4e-sent-folder   "/woo.kara@gmail.com/[Gmail].Sent Mail")
-;;      (smtpmail-mail-address "woo.kara@gmail.com")
-;;      (user-mail-address "woo.kara@gmail.com")
-;;      (smtpmail-smtp-user "woo.kara"))
-;;     ("woo@nceas.ucsb.edu"
-;;      (mu4e-drafts-folder "/woo@nceas.ucsb.edu/[Gmail].Drafts")
-;;      (mu4e-sent-folder   "/woo@nceas.ucsb.edu/[Gmail].Sent Mail")
-;;      (smtpmail-mail-address "woo@nceas.ucsb.edu")
-;;      (user-mail-address "woo@nceas.ucsb.edu")
-;;      (smtpmail-smtp-user "woo@nceas.ucsb.edu"))))
-
-;; (defun my-mu4e-set-account ()
-;;   "Set the account for composing a message."
-;;   (let* ((account
-;;           (if mu4e-compose-parent-message
-;;               (let ((maildir (mu4e-message-field mu4e-compose-parent-message :maildir)))
-;;                 (string-match "/\\(.*?\\)/" maildir)
-;;                 (match-string 1 maildir))
-;;             (completing-read (format "Compose with account: (%s) "
-;;                                      (mapconcat #'(lambda (var) (car var))
-;;                                                 my-mu4e-account-alist "/"))
-;;                              (mapcar #'(lambda (var) (car var)) my-mu4e-account-alist)
-;;                              nil t nil nil (caar my-mu4e-account-alist))))
-;;          (account-vars (cdr (assoc account my-mu4e-account-alist))))
-;;     (if account-vars
-;;         (mapc #'(lambda (var)
-;;                   (set (car var) (cadr var)))
-;;               account-vars)
-;;       (error "No email account found"))))
-
-;; (add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
-
-;; ;; Don't show messages in duplicate
-;; (setq mu4e-headers-skip-duplicates t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -858,20 +642,6 @@ With prefix ARG ask for extra args."
 
 (setq inf-ruby-default-implementation "pry")
 (add-hook 'after-init-hook 'inf-ruby-switch-setup)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;                                  Tramp                                 ;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(setq tramp-verbose 1)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;                                 Twitter                                ;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(setq twittering-use-master-password t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
