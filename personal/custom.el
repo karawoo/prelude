@@ -5,9 +5,6 @@
  ;; If there is more than one, they won't work right.
  '(company-quickhelp-color-background "#4F4F4F")
  '(company-quickhelp-color-foreground "#DCDCCC")
- '(custom-enabled-themes '(sanityinc-tomorrow-night))
- '(custom-safe-themes
-   '("06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default))
  '(gnutls-algorithm-priority "normal:-vers-tls1.3")
  '(jabber-resource-line-format "     %r - %s")
  '(magit-diff-use-overlays nil)
@@ -38,7 +35,6 @@
 
 
 (prelude-require-packages '(anzu
-                            color-theme-sanityinc-tomorrow
                             ein
                             emoji-cheat-sheet-plus
                             elpy
