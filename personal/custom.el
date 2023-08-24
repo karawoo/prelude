@@ -29,11 +29,8 @@
 ;; Package repositories
 (require 'package)
 
-;; (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
-;; (add-to-list 'package-archives '("elpy" . "https://jorgenschaefer.github.io/packages/"))
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")
                          ("elpy" . "https://jorgenschaefer.github.io/packages/")))
 
 
