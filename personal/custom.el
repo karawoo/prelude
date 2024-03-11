@@ -781,7 +781,7 @@ With prefix ARG ask for extra args."
       python-shell-interpreter-args "-i --simple-prompt")
 
 ;; Python environments
-(setenv "WORKON_HOME" "/Users/kwoo/envs")
+;; (setenv "WORKON_HOME" "/Users/kwoo/envs")
 
 ;; Use Django-style docstrings
 (setq python-fill-docstring-style 'django)
