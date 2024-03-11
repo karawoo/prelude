@@ -7,7 +7,7 @@
  '(company-quickhelp-color-foreground "#DCDCCC")
  '(custom-enabled-themes '(sanityinc-tomorrow-night))
  '(custom-safe-themes
-   '("06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default))
+   '("6fc9e40b4375d9d8d0d9521505849ab4d04220ed470db0b78b700230da0a86c1" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default))
  '(gnutls-algorithm-priority "normal:-vers-tls1.3")
  '(jabber-resource-line-format "     %r - %s")
  '(magit-diff-use-overlays nil)
@@ -16,7 +16,7 @@
    '("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3"))
  '(org-agenda-files '("~/todo.org"))
  '(package-selected-packages
-   '(sql-indent nginx-mode key-chord dockerfile-mode bundler rubocop robe inf-ruby rspec-mode poly-markdown poly-noweb poly-R julia-mode helm projectile ws-butler uuid editorconfig zop-to-char zenburn-theme yaml-mode which-key wgrep volatile-highlights vkill twittering-mode smex smartrep smartparens smart-mode-line scss-mode rainbow-mode rainbow-delimiters polymode php-mode ox-pandoc ox-gfm ov org-ref operate-on-number mu4e-maildirs-extension move-text markdown-mode magit key-combo json-mode jabber imenu-anywhere helm-projectile helm-descbinds helm-ag guru-mode grizzl god-mode gitignore-mode gitconfig-mode git-timemachine gist geiser flycheck flx-ido floobits expand-region exec-path-from-shell ess emoji-cheat-sheet-plus elpy elisp-slime-nav ein easy-kill discover-my-major diminish diff-hl csv-mode crux company-auctex company-anaconda color-theme-sanityinc-tomorrow cdlatex browse-kill-ring beacon anzu ace-window ac-emoji))
+   '(xterm-color sql-indent nginx-mode key-chord dockerfile-mode bundler rubocop robe inf-ruby rspec-mode poly-markdown poly-noweb poly-R julia-mode helm projectile ws-butler uuid editorconfig zop-to-char zenburn-theme yaml-mode which-key wgrep volatile-highlights vkill twittering-mode smex smartrep smartparens smart-mode-line scss-mode rainbow-mode rainbow-delimiters polymode php-mode ox-pandoc ox-gfm ov org-ref operate-on-number mu4e-maildirs-extension move-text markdown-mode magit key-combo json-mode jabber imenu-anywhere helm-projectile helm-descbinds helm-ag guru-mode grizzl god-mode gitignore-mode gitconfig-mode git-timemachine gist geiser flycheck flx-ido floobits expand-region exec-path-from-shell ess emoji-cheat-sheet-plus elpy elisp-slime-nav ein easy-kill discover-my-major diminish diff-hl csv-mode crux company-auctex company-anaconda color-theme-sanityinc-tomorrow cdlatex browse-kill-ring beacon anzu ace-window ac-emoji))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838")))
 
 (custom-set-faces
@@ -58,7 +58,8 @@
                             undo-tree
                             use-package
                             wgrep
-                            ws-butler))
+                            ws-butler
+                            xterm-color))
 
 ;; Check if computer is my work computer
 (defun work-computer ()
