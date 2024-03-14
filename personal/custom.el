@@ -56,11 +56,6 @@
                             ws-butler
                             xterm-color))
 
-;; Check if computer is my work computer
-(defun work-computer ()
-  (interactive)
-  (string-equal (system-name) "heimalandi.local"))
-
 ;; Start up in fullscreen
 (add-to-list 'default-frame-alist '(fullscreen . fullscreen))
 
@@ -383,10 +378,9 @@ With prefix ARG ask for extra args."
 ;; Org capture headers for work
 (define-key global-map "\C-cc" 'org-capture)
 
-(if (work-computer)
-    (setq org-capture-templates
-          '(("g" "General TODOs" entry (file+headline "~/todo.org" "General tasks")
-             "* TODO %?\n  %i"))))
+(setq org-capture-templates
+      '(("t" "TODOs" entry (file+headline "~/todo.org" "Tasks")
+         "* TODO %?\n  %i")))
 
 ;; Add smartparens options
 (sp-local-pair 'org-mode "~" "~")
