@@ -373,7 +373,7 @@ With prefix ARG ask for extra args."
 
 ;; Set TODO keyword options
 (setq org-todo-keywords
-      '((sequence "TODO" "|" "DONE" "CLOSED")))
+      '((sequence "TODO" "IN PROGRESS" "|" "DONE" "CLOSED")))
 
 ;; Org capture headers for work
 (define-key global-map "\C-cc" 'org-capture)
