@@ -297,6 +297,20 @@ With prefix ARG ask for extra args."
    "shiny::runApp(\".\")\n" "Running app" arg
    '("" (read-string "Arguments: " "recompile = TRUE"))))
 
+;; Customize syntax highlighting
+(setq ess-R-font-lock-keywords
+      '((ess-R-fl-keyword:keywords . t)
+	(ess-R-fl-keyword:constants . t)
+	(ess-R-fl-keyword:modifiers . t)
+	(ess-R-fl-keyword:fun-defs . t)
+	(ess-R-fl-keyword:assign-ops . t)
+	(ess-R-fl-keyword:%op% . t)
+	(ess-fl-keyword:fun-calls . t)
+	(ess-fl-keyword:numbers)
+	(ess-fl-keyword:operators)
+	(ess-fl-keyword:delimiters)
+	(ess-fl-keyword:=)
+	(ess-R-fl-keyword:F&T . t)))
 
 (use-package xterm-color
              :init
