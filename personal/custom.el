@@ -299,8 +299,6 @@ With prefix ARG ask for extra args."
 
 
 (use-package xterm-color
-             :load-path "/Users/kara/projects/forks/xterm-color/"
-
              :init
              (setq comint-output-filter-functions
                    (remove 'ansi-color-process-output comint-output-filter-functions))
