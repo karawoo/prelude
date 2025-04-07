@@ -254,13 +254,13 @@ sentence. Otherwise kill forward but preserve any punctuation at the sentence en
           '(lambda()
              (local-set-key [(s-return)] 'ess-use-this-dir)))
 
-;; %>% shortcut
+;; pipe shortcut
 ;; http://emacs.stackexchange.com/a/8055/7060
 (defun then_R_operator ()
   "R - %>% operator or 'then' pipe operator"
   (interactive)
   (just-one-space 1)
-  (insert "%>%")
+  (insert "|>")
   (reindent-then-newline-and-indent))
 (define-key ess-mode-map (kbd "C->") 'then_R_operator)
 (define-key inferior-ess-mode-map (kbd "C->") 'then_R_operator)
