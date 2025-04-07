@@ -62,6 +62,7 @@ Or you can use another theme altogether by adding something in `personal/preload
 ```emacs-lisp
 (setq prelude-theme 'solarized-dark)
 ```
+
 in `personal/preload`.
 
 Finally, if you don't want any theme at all, you can add this to your
@@ -78,10 +79,10 @@ personalization.  There is no single special personal config file --
 any files you create in the `personal/` directory will be loaded in
 lexicographical order.  The overall loading precedence is:
 
-1.  `personal/preload/*`
-2.  `core/`
-3.  `personal/prelude-modules.el` (or deprecated `prelude-modules.el`)
-4.  `personal/*`
+1. `personal/preload/*`
+2. `core/`
+3. `personal/prelude-modules.el` (or deprecated `prelude-modules.el`)
+4. `personal/*`
 
 ### Personalization Example
 
@@ -163,8 +164,8 @@ Currently this only affects automated formatting of Typescript files.
 
 Out-of-the-box Prelude will create two versions of many keybindings in `prelude-mode`:
 
-* One "traditional" version with a prefix like `Control`
-* One "alternative" version with a prefix like `Super`
+- One "traditional" version with a prefix like `Control`
+- One "alternative" version with a prefix like `Super`
 
 The reason for this is that there are generally more options for short keybindings with `Super` - e.g. you can
 have `s-p`, `s-g`, etc. There's, however, a problem lying here as well - some operating systems and
@@ -173,6 +174,24 @@ desktop environments might be making heavy use of such keybindings. (in most cas
 
 ```emacs-lisp
 (setq prelude-super-keybindings nil)
+```
+
+### Disable Projectile
+
+By default, Prelude configures [Projectile](https://github.com/bbatsov/projectile) for project
+interaction. To disable this, add the following to your config.
+
+``` emacs-lisp
+(setq prelude-projectile nil)
+```
+
+### Disable hippie-expand
+
+By default, Prelude configures `hippie-expand` as a replacement for Emacs' default `dabbrev`. To disable this
+behaviour, add the following to your config.
+
+``` emacs-lisp
+(setq prelude-hippie-expand nil)
 ```
 
 ### Configuration per file or directory

@@ -1,6 +1,6 @@
 ;;; prelude-helm-everywhere.el --- Enable Helm everywhere
 ;;
-;; Copyright © 2014-2023 Tu, Do Hoang
+;; Copyright © 2014-2025 Tu, Do Hoang
 ;;
 ;; Author: Tu, Do Hoang (tuhdo1710@gmail.com)
 ;; URL: https://github.com/bbatsov/prelude
@@ -63,8 +63,9 @@
 (helm-descbinds-mode)
 (helm-mode 1)
 
-;; enable Helm version of Projectile with replacment commands
-(helm-projectile-on)
+(when prelude-projectile
+      ;; enable Helm version of Projectile with replacment commands
+      (helm-projectile-on))
 
 (provide 'prelude-helm-everywhere)
 ;; prelude-helm-everywhere.el ends here.
