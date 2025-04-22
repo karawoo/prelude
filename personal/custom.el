@@ -58,6 +58,7 @@
                             ox-gfm
                             ox-pandoc
                             polymode
+                            poly-R
                             projectile
                             pyvenv
                             rspec-mode
