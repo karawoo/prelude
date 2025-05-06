@@ -57,6 +57,7 @@
                             ruby-mode
                             undo-tree
                             use-package
+                            vterm
                             wgrep
                             ws-butler
                             xterm-color))
@@ -357,6 +358,7 @@ With prefix ARG ask for extra args."
 (require 'just-ts-mode)
 (just-ts-mode-install-grammar)
 (define-key just-ts-mode-map (kbd "C-x j") 'justl)
+(setq justl-shell 'vterm)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
