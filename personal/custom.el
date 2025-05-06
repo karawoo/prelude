@@ -41,7 +41,10 @@
                             elpy
                             ess
                             inf-ruby
+                            just-ts-mode
+                            justl
                             markdown-mode
+                            neotree
                             org
                             org-ref
                             ox-gfm
