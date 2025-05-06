@@ -177,6 +177,9 @@ sentence. Otherwise kill forward but preserve any punctuation at the sentence en
 ;; Turn on smartparens
 (smartparens-global-mode t)
 
+;; toggle neotree
+(global-set-key (kbd "C-x C-t") 'neotree-toggle)
+
 ;; Timezones
 (setq display-time-world-list
       '(("America/Los_Angeles" "Pacific")
