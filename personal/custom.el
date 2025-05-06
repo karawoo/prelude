@@ -16,18 +16,7 @@
    '("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3"
      "#DC8CC3"))
  '(org-agenda-files '("~/todo.org"))
- '(package-selected-packages
-   '(ace-window ag anzu browse-kill-ring cdlatex color-theme-sanityinc-tomorrow
-                company-anaconda company-auctex crux diff-hl diminish
-                discover-my-major easy-kill ein elisp-slime-nav elpy
-                emoji-cheat-sheet-plus epl ess exec-path-from-shell
-                expand-region flycheck geiser gist git-modes git-timemachine
-                guru-mode helm-ag helm-descbinds helm-projectile hl-todo
-                imenu-anywhere inf-ruby js2-mode json-mode key-chord magit
-                markdown-mode move-text nlinum operate-on-number org-ref ox-gfm
-                poly-R rainbow-delimiters rainbow-mode rspec-mode smartparens
-                smartrep super-save undo-tree volatile-highlights wgrep
-                ws-butler xterm-color yaml-mode zenburn-theme zop-to-char))
+ '(package-selected-packages nil)
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838")))
 
 (custom-set-faces
