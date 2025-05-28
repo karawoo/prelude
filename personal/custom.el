@@ -200,6 +200,11 @@ sentence. Otherwise kill forward but preserve any punctuation at the sentence en
       (tool-bar-mode -1)
       (scroll-bar-mode -1)))
 
+;; Leave fill-paragraph alone thankyouverymuch
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (keymap-local-set "M-q" 'fill-paragraph)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;                               ace-window                               ;;;;
