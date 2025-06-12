@@ -59,6 +59,7 @@
                             pyvenv
                             rspec-mode
                             ruby-mode
+                            rust-mode
                             undo-tree
                             use-package
                             vterm
@@ -668,6 +669,13 @@ With prefix ARG ask for extra args."
 
 (setq inf-ruby-default-implementation "pry")
 (add-hook 'after-init-hook 'inf-ruby-switch-setup)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;                                  Rust                                  ;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(setq lsp-rust-server 'rust-analyzer)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
