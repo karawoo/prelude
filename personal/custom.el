@@ -26,6 +26,10 @@
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 160 :width normal :foundry "unknown")))))
 
+;; Remap meta and super on Mac
+(setq mac-command-modifier 'meta)
+(setq mac-option-modifier 'super)
+
 ;; Package repositories
 (require 'package)
 
@@ -73,10 +77,6 @@
 (mapc (lambda (rmd-file-name)
         (load (concat prelude-personal-dir rmd-file-name)))
       load-personal-config-list)
-
-;; Remap meta and super on Mac
-(setq mac-command-modifier 'meta)
-(setq mac-option-modifier 'super)
 
 ;; Fill paragraphs at 80 characters
 (setq-default fill-column 80)
