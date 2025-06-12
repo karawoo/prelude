@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD013 MD046 -->
+
 # Configuration
 
 ## User Interface
@@ -74,10 +76,10 @@ Finally, if you don't want any theme at all, you can add this to your
 
 ## Personalizing
 
-All files you create under the `personal/` directory are yours for
+All files or directories of files you create under the `personal/` directory are yours for
 personalization.  There is no single special personal config file --
-any files you create in the `personal/` directory will be loaded in
-lexicographical order.  The overall loading precedence is:
+any files or directories of files you create in the `personal/` directory will be loaded in
+lexicographical order (files first and then directories of files).  The overall loading precedence is:
 
 1. `personal/preload/*`
 2. `core/`
@@ -199,3 +201,12 @@ behaviour, add the following to your config.
 Some of these settings (those that don't need to be pre-loaded) can also be set
 on a per-file or directory basis by using a file local variable or a
 `.dir-locals.el` file.
+
+### package-user-dir
+
+By default, prelude sets the directory where downloaded modules are installed to `<prelude-dir>/elpa`. If you want
+to disable this behaviour, set the following variable to nil before loading prelude.
+
+```emacs-lisp
+(setq prelude-override-package-user-dir nil)
+```
