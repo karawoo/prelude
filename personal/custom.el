@@ -333,6 +333,33 @@ With prefix ARG ask for extra args."
              :config
              (setq xterm-color-use-bold t))
 
+(with-eval-after-load "lsp-mode"
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-stdio-connection '("~/.local/bin/air" "language-server"))
+    :major-modes '(ess-r-mode)
+    :priority 1 ; higher priority than the default R language server
+    :server-id 'air-language-server))
+
+  ;; override the default R language server with air
+  (setq lsp-disabled-clients '(lsp-r))
+
+  ;; ensure air is used for R files
+  (add-to-list 'lsp-language-id-configuration '(ess-r-mode . "r")))
+
+;; enable lsp for R files
+(add-hook 'ess-r-mode-hook #'lsp-deferred)
+
+;; add format-on-save for R files
+(with-eval-after-load "ess"
+  (defun enable-lsp-format-before-save ()
+    "Enable LSP format before save for the current buffer."
+    (interactive)
+    (add-hook 'before-save-hook #'lsp-format-buffer nil t))
+
+  ;; Add the hook to ess-r-mode
+  (add-hook 'ess-r-mode-hook #'enable-lsp-format-before-save))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;                                  Helm                                  ;;;;
