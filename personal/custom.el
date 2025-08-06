@@ -67,6 +67,24 @@
                             ws-butler
                             xterm-color))
 
+;; Set up straight.el
+;; https://github.com/radian-software/straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
 ;; Start up in fullscreen
 (add-to-list 'default-frame-alist '(fullscreen . fullscreen))
 
@@ -213,6 +231,19 @@ sentence. Otherwise kill forward but preserve any punctuation at the sentence en
 
 ;; Set characters for window labels to be on the home row
 (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;                             claude-code-ide                            ;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package claude-code-ide
+  :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
+  :bind ("C-c C-'" . claude-code-ide-menu)
+  :config
+  (claude-code-ide-emacs-tools-setup))
+
+(setq claude-code-ide-window-side 'left)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -733,5 +764,3 @@ With prefix ARG ask for extra args."
 (provide 'custom)
 
 ;;; custom.el ends here
-
-
