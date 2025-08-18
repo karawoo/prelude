@@ -17,6 +17,8 @@
      "#DC8CC3"))
  '(org-agenda-files '("~/todo.org"))
  '(package-selected-packages nil)
+ '(package-vc-selected-packages
+   '((claude-code-ide :url "https://github.com/manzaltu/claude-code-ide.el")))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838")))
 
 (custom-set-faces
@@ -66,24 +68,6 @@
                             wgrep
                             ws-butler
                             xterm-color))
-
-;; Set up straight.el
-;; https://github.com/radian-software/straight.el
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name
-        "straight/repos/straight.el/bootstrap.el"
-        (or (bound-and-true-p straight-base-dir)
-            user-emacs-directory)))
-      (bootstrap-version 7))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
 
 ;; Start up in fullscreen
 (add-to-list 'default-frame-alist '(fullscreen . fullscreen))
@@ -238,7 +222,7 @@ sentence. Otherwise kill forward but preserve any punctuation at the sentence en
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package claude-code-ide
-  :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
+  :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :newest)
   :bind ("C-c C-'" . claude-code-ide-menu)
   :config
   (claude-code-ide-emacs-tools-setup))
