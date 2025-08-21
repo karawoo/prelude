@@ -360,7 +360,7 @@ With prefix ARG ask for extra args."
   ;; override the default R language server
   (setq lsp-disabled-clients '(lsp-r))
 
-  ;; ensure air is used for R files
+  ;; ensure roughly is used for R files
   (add-to-list 'lsp-language-id-configuration '(ess-r-mode . "r")))
 
 ;; enable lsp for R files
