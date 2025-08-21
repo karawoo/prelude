@@ -267,7 +267,7 @@ sentence. Otherwise kill forward but preserve any punctuation at the sentence en
 (setq ess-fill-calls-newlines t)
 
 ;; Don't restore history or save on exit
-(setq-default inferior-R-args "--no-restore-history --no-save")
+(setq-default inferior-R-args "--no-restore --no-save")
 
 ;; Don't ask me for a directory on startup
 (setq ess-ask-for-ess-directory nil)
