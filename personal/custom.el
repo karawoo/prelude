@@ -49,8 +49,10 @@
                             inf-ruby
                             just-ts-mode
                             justl
+                            marginalia
                             markdown-mode
                             neotree
+                            orderless
                             org
                             org-ref
                             ox-gfm
@@ -64,6 +66,7 @@
                             rust-mode
                             undo-tree
                             use-package
+                            vertico
                             vterm
                             wgrep
                             ws-butler
