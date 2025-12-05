@@ -19,7 +19,8 @@
  '(package-selected-packages nil)
  '(package-vc-selected-packages
    '((claude-code-ide :url "https://github.com/manzaltu/claude-code-ide.el")))
- '(pdf-view-midnight-colors '("#DCDCCC" . "#383838")))
+ '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
+ '(safe-local-variable-directories '("/Users/kara/projects/connect/")))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
