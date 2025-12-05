@@ -420,6 +420,12 @@ With prefix ARG ask for extra args."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq lsp-file-watch-threshold 5000)
+(with-eval-after-load 'lsp-mode
+  (dolist (dir '("[/\\\\]node_modules\\'"
+                 "[/\\\\]bin\\'"
+                 "[/\\\\]log\\'"
+                 "[/\\\\]cache\\'"))
+    (add-to-list 'lsp-file-watch-ignored-directories dir)))
 (define-key global-map (kbd "M-?") 'xref-find-references)
 
 
