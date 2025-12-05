@@ -62,6 +62,7 @@
                             poly-R
                             projectile
                             pyvenv
+                            quarto-mode
                             rspec-mode
                             ruby-mode
                             rust-mode
