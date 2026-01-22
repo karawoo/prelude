@@ -42,6 +42,7 @@
 
 
 (prelude-require-packages '(anzu
+                            browse-at-remote
                             color-theme-sanityinc-tomorrow
                             ein
                             emoji-cheat-sheet-plus
