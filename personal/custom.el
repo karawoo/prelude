@@ -20,7 +20,8 @@
  '(package-vc-selected-packages
    '((claude-code-ide :url "https://github.com/manzaltu/claude-code-ide.el")))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
- '(safe-local-variable-directories '("/Users/kara/projects/connect/")))
+ '(safe-local-variable-directories '("/Users/kara/projects/connect/"))
+ '(safe-local-variable-values '((js2-basic-offset . 2))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
