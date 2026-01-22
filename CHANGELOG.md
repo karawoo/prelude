@@ -23,6 +23,8 @@
 
 ### Changes
 
+- Remove redundant addition to `auto-mode-alist` for Markdown
+  (note: this reverts the default to `markdown-mode` instead of `gfm-mode`).
 - Bind all essential `avy` commands to their recommended keybindings.
 - Remove `company-lsp`.
 - Replace `yank-pop` key-binding to `counse-yank-pop` for `ivy-mode`.
@@ -77,6 +79,7 @@
 
 ### Bugs fixed
 
+- [#1445](https://github.com/bbatsov/prelude/issues/1445): prelude-rust fails to load due to tree-sitter dependency issue
 - [#1302](https://github.com/bbatsov/prelude/issues/1302): `C-a` should be bound to `org-beginning-of-line` in org-mode buffers.
 
 ## 1.0.0 (2020-09-15)
