@@ -655,6 +655,9 @@ With prefix ARG ask for extra args."
   (dolist (dir '("node_modules" "bin" "log" "cache"))
     (add-to-list 'projectile-globally-ignored-directories dir)))
 
+(setq projectile-generic-command "rg --files --hidden -0")
+(setq projectile-indexing-method 'alien)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;                       Python, Elpy, Pyvenv, EIN                        ;;;;
