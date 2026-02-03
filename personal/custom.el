@@ -761,7 +761,14 @@ With prefix ARG ask for extra args."
 
 (add-hook 'vterm-mode-hook
           (lambda ()
-            (prelude-mode -1)))
+            ;; Disable prelude-mode keymap locally (not globally) so C-a works in vterm
+            ;; but prelude keybindings remain active in other buffers
+            (setq-local minor-mode-overriding-map-alist
+                        (cons (cons 'prelude-mode nil)
+                              minor-mode-overriding-map-alist))
+            ;; Re-add useful keybindings that were on prelude-mode-map
+            (local-set-key (kbd "C-c f") 'helm-recentf)
+            (local-set-key (kbd "C-c p s g") 'helm-projectile-grep)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
