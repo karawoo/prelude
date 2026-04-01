@@ -651,6 +651,7 @@ With prefix ARG ask for extra args."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq projectile-mode-line "Projectile")
+(setq projectile-project-search-path '(("~/projects/" . 3)))
 (with-eval-after-load 'projectile
   (dolist (dir '("node_modules" "bin" "log" "cache"))
     (add-to-list 'projectile-globally-ignored-directories dir)))
