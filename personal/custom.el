@@ -60,6 +60,8 @@
                             org-ref
                             ox-gfm
                             ox-pandoc
+                            perspective
+                            persp-projectile
                             polymode
                             poly-R
                             projectile
@@ -665,6 +667,16 @@ With prefix ARG ask for extra args."
 
 (setq projectile-generic-command "rg --files --hidden -0")
 (setq projectile-indexing-method 'alien)
+
+;; perspective.el: per-project workspaces that remember open buffers/windows
+(setq persp-mode-prefix-key (kbd "C-c M-p"))
+(persp-mode)
+(require 'persp-projectile)
+(define-key projectile-mode-map [remap projectile-switch-project] 'projectile-persp-switch-project)
+
+;; Persist perspectives across Emacs restarts
+(add-hook 'kill-emacs-hook #'persp-state-save)
+(setq persp-state-default-file (expand-file-name "persp-state" prelude-savefile-dir))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
