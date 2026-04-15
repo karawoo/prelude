@@ -667,6 +667,12 @@ With prefix ARG ask for extra args."
 
 (setq projectile-generic-command "rg --files --hidden -0")
 (setq projectile-indexing-method 'alien)
+(setq projectile-switch-project-action
+      (lambda ()
+        (let ((readme (expand-file-name "README.md" (projectile-project-root))))
+          (if (file-exists-p readme)
+              (find-file readme)
+            (projectile-find-file)))))
 
 ;; perspective.el: per-project workspaces that remember open buffers/windows
 (setq persp-mode-prefix-key (kbd "C-c M-p"))
