@@ -265,7 +265,7 @@ sentence. Otherwise kill forward but preserve any punctuation at the sentence en
   :config
   (claude-code-ide-emacs-tools-setup))
 
-(setq claude-code-ide-window-side 'left)
+(setq claude-code-ide-use-side-window nil)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
