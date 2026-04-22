@@ -18,7 +18,8 @@
  '(org-agenda-files '("~/todo.org"))
  '(package-selected-packages nil)
  '(package-vc-selected-packages
-   '((claude-code-ide :url "https://github.com/manzaltu/claude-code-ide.el")))
+   '((agentsmith :url "https://github.com/snystrom/agentsmith")
+     (claude-code-ide :url "https://github.com/manzaltu/claude-code-ide.el")))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(safe-local-variable-directories '("/Users/kara/projects/connect/"))
  '(safe-local-variable-values '((js2-basic-offset . 2))))
@@ -216,6 +217,27 @@ sentence. Otherwise kill forward but preserve any punctuation at the sentence en
 (add-hook 'prog-mode-hook
           (lambda ()
             (keymap-local-set "M-q" 'fill-paragraph)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;                               agentsmith                               ;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package agentsmith
+  :vc (:url "https://github.com/snystrom/agentsmith" :rev :newest)
+  :bind (("C-c C-a" . agentsmith)
+         ("C-c C-\"" . agentsmith-workspace-open-agent)
+         ))
+
+(setq agentsmith-default-workspace-parent "~/workspaces/")
+(setq agentsmith-default-repo-parent "~/projects/")
+
+;; font-lock strips propertize face properties in agentsmith's magit-section
+(add-hook 'agentsmith-mode-hook (lambda () (font-lock-mode -1)))
+
+;; todo: commands to bind to something eventually:
+;; agentsmith-worktree-find-file
+;; agentsmith-worktree-toggle-agent
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
