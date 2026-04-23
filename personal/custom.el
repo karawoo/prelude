@@ -225,7 +225,7 @@ sentence. Otherwise kill forward but preserve any punctuation at the sentence en
 
 (use-package agentsmith
   :vc (:url "https://github.com/snystrom/agentsmith" :rev :newest)
-  :bind (("C-c C-a" . agentsmith)
+  :bind (("C-c C-g" . agentsmith)
          ("C-c C-\"" . agentsmith-workspace-open-agent)
          ))
 
@@ -816,6 +816,7 @@ With prefix ARG ask for extra args."
                               minor-mode-overriding-map-alist))
             ;; Re-add useful keybindings that were on prelude-mode-map
             (local-set-key (kbd "C-c f") 'helm-recentf)
+            (local-set-key (kbd "C-c p") 'projectile-command-map)
             (local-set-key (kbd "C-c p s g") 'helm-projectile-grep)))
 
 
