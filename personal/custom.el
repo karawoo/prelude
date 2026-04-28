@@ -260,7 +260,7 @@ sentence. Otherwise kill forward but preserve any punctuation at the sentence en
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package claude-code-ide
-  :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :newest)
+  :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :"56db02ee386d009ddb8b1482310f1f9beeefb810")
   :bind ("C-c C-'" . claude-code-ide-menu)
   :config
   (claude-code-ide-emacs-tools-setup))
