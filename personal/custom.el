@@ -235,6 +235,11 @@ sentence. Otherwise kill forward but preserve any punctuation at the sentence en
 ;; font-lock strips propertize face properties in agentsmith's magit-section
 (add-hook 'agentsmith-mode-hook (lambda () (font-lock-mode -1)))
 
+(setq agentsmith-switch-to-existing-project-function
+      #'agentsmith-switch-to-existing-project-perspective
+      agentsmith-create-project-function
+      #'agentsmith-create-project-perspective)
+
 ;; todo: commands to bind to something eventually:
 ;; agentsmith-worktree-find-file
 ;; agentsmith-worktree-toggle-agent
