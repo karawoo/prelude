@@ -240,6 +240,10 @@ sentence. Otherwise kill forward but preserve any punctuation at the sentence en
       agentsmith-create-project-function
       #'agentsmith-create-project-perspective)
 
+;; branch prefix
+(setq agentsmith-worktree-branch-name-function
+      (lambda (ws-name) (format "kara/%s" ws-name)))
+
 ;; todo: commands to bind to something eventually:
 ;; agentsmith-worktree-find-file
 ;; agentsmith-worktree-toggle-agent
