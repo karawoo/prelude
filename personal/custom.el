@@ -446,6 +446,11 @@ With prefix ARG ask for extra args."
 ;; Two space indent for json
 (setq js-indent-level 2)
 
+;; Disable tide's format-on-save for TypeScript
+(add-hook 'typescript-mode-hook
+          (lambda ()
+            (setq-local prelude-format-on-save nil)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;                                  just                                  ;;;;
