@@ -231,6 +231,7 @@ sentence. Otherwise kill forward but preserve any punctuation at the sentence en
 
 (setq agentsmith-default-workspace-parent "~/workspaces/")
 (setq agentsmith-default-repo-parent "~/projects/")
+(setq agentsmith-default-view 'kanban)
 
 ;; font-lock strips propertize face properties in agentsmith's magit-section
 (add-hook 'agentsmith-mode-hook (lambda () (font-lock-mode -1)))
