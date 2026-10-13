@@ -1,6 +1,6 @@
-;;; prelude-elixir.el --- Emacs Prelude: Elixir programming support.
+;;; prelude-elixir.el --- Emacs Prelude: Elixir programming support.  -*- lexical-binding: t; -*-
 ;;
-;; Copyright © 2014-2025 Samuel Tonini
+;; Copyright © 2014-2026 Samuel Tonini
 ;;
 ;; Author: Samuel Tonini <tonini.samuel@gmail.com>
 
@@ -8,7 +8,9 @@
 
 ;;; Commentary:
 
-;; Some basic configuration for Elixir development.
+;; Configuration for Elixir development.  Uses elixir-ts-mode
+;; (tree-sitter) when available and LSP for code intelligence.
+;; You'll need ElixirLS or Lexical as language server.
 
 ;;; License:
 
@@ -31,7 +33,26 @@
 
 (require 'prelude-programming)
 
-(prelude-require-packages '(elixir-mode alchemist))
+;; elixir-ts-mode is built-in since Emacs 30.  On Emacs 29,
+;; fall back to the third-party elixir-mode package.
+(dolist (regexp '("\\.ex\\'" "\\.exs\\'" "mix\\.lock"))
+  (prelude-treesit-auto-mode regexp 'elixir 'elixir-ts-mode 'elixir-mode 'elixir-mode))
+
+;; HEEx template support (Phoenix); built into Emacs 30+
+(use-package heex-ts-mode
+  :ensure t
+  :defer t)
+
+(defun prelude-elixir-mode-defaults ()
+  (subword-mode +1)
+  (prelude-lsp-enable))
+
+(add-hook 'prelude-elixir-mode-hook #'prelude-elixir-mode-defaults)
+
+(add-hook 'elixir-mode-hook (lambda ()
+                              (run-hooks 'prelude-elixir-mode-hook)))
+(add-hook 'elixir-ts-mode-hook (lambda ()
+                                 (run-hooks 'prelude-elixir-mode-hook)))
 
 (provide 'prelude-elixir)
 

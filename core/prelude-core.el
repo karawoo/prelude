@@ -1,6 +1,6 @@
-;;; prelude-core.el --- Emacs Prelude: Core Prelude functions.
+;;; prelude-core.el --- Emacs Prelude: Core Prelude functions.  -*- lexical-binding: t; -*-
 ;;
-;; Copyright © 2011-2025 Bozhidar Batsov
+;; Copyright © 2011-2026 Bozhidar Batsov
 ;;
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/prelude
@@ -38,11 +38,6 @@
 
 (require 'cl-lib)
 
-(defun prelude-buffer-mode (buffer-or-name)
-  "Retrieve the `major-mode' of BUFFER-OR-NAME."
-  (with-current-buffer buffer-or-name
-    major-mode))
-
 (defun prelude-search (query-url prompt)
   "Open the search url constructed with the QUERY-URL.
 PROMPT sets the `read-string prompt."
@@ -54,7 +49,9 @@ PROMPT sets the `read-string prompt."
               (read-string prompt))))))
 
 (defmacro prelude-install-search-engine (search-engine-name search-engine-url search-engine-prompt)
-  "Given some information regarding a search engine, install the interactive command to search through them"
+  "Define `prelude-SEARCH-ENGINE-NAME', a command searching SEARCH-ENGINE-URL.
+The command prompts with SEARCH-ENGINE-PROMPT for the query, defaulting
+to the active region."
   `(defun ,(intern (format "prelude-%s" search-engine-name)) ()
        ,(format "Search %s with a query or region if any." search-engine-name)
        (interactive)
@@ -116,31 +113,41 @@ PROMPT sets the `read-string prompt."
     (when after-init-time
       (eval form))))
 
-(require 'epl)
+(defun prelude-fetch-shell-environment-p ()
+  "Return non-nil if Emacs needs to get its environment from the shell.
+That's the case for GUI frames and daemons, which don't inherit it the
+way Emacs started from a terminal does."
+  (or (memq window-system '(mac ns x pgtk)) (daemonp)))
 
 (defun prelude-update ()
   "Update Prelude to its latest version."
   (interactive)
   (when (y-or-n-p "Do you want to update Prelude? ")
     (message "Updating installed packages...")
-    (epl-upgrade)
+    (package-upgrade-all)
     (message "Updating Prelude...")
-    (cd prelude-dir)
-    (shell-command "git pull")
+    (let ((default-directory prelude-dir)
+          (output (get-buffer-create "*prelude-update*")))
+      (with-current-buffer output (erase-buffer))
+      (unless (zerop (call-process "git" nil output nil "pull" "--ff-only"))
+        (display-buffer output)
+        (user-error "Updating Prelude with `git pull --ff-only' failed, see *prelude-update* for details")))
     (prelude-recompile-init)
     (message "Update finished. Restart Emacs to complete the process.")))
 
 (defun prelude-update-packages (&optional arg)
   "Update Prelude's packages.
-This includes package installed via `prelude-require-package'.
+This covers every package Prelude installs (see `prelude-packages').
 
 With a prefix ARG updates all installed packages."
   (interactive "P")
   (when (y-or-n-p "Do you want to update Prelude's packages? ")
     (if arg
-        (epl-upgrade)
-      (epl-upgrade (cl-remove-if-not (lambda (p) (memq (epl-package-name p) prelude-packages))
-                                     (epl-installed-packages))))
+        (package-upgrade-all)
+      (package-refresh-contents)
+      (dolist (package prelude-packages)
+        (when (package-installed-p package)
+          (package-upgrade package))))
     (message "Update finished. Restart Emacs to complete the process.")))
 
 (defun prelude-wrap-with (s)
@@ -148,6 +155,57 @@ With a prefix ARG updates all installed packages."
   `(lambda (&optional arg)
      (interactive "P")
      (sp-wrap-with-pair ,s)))
+
+(defvar prelude-conflicting-modules
+  '((prelude-ido prelude-ivy prelude-vertico prelude-helm)
+    (prelude-company prelude-corfu))
+  "Groups of modules that do the same job and shouldn't be enabled together.")
+
+(defun prelude-check-module-conflicts ()
+  "Warn about enabled modules that conflict with each other.
+See `prelude-conflicting-modules'."
+  (dolist (group prelude-conflicting-modules)
+    (let ((enabled (seq-filter #'featurep group)))
+      (when (cdr enabled)
+        (display-warning
+         'prelude
+         (format "Modules %s do the same job, keep only one of them in %s"
+                 (mapconcat #'symbol-name enabled ", ")
+                 prelude-modules-file))))))
+
+(defun prelude-lsp-enable ()
+  "Enable the LSP client configured via `prelude-lsp-client'."
+  (pcase prelude-lsp-client
+    ('eglot (eglot-ensure))
+    ('lsp-mode
+     (require 'prelude-lsp-mode)
+     (lsp-deferred))))
+
+;; Eglot configuration
+(defvar eglot-autoshutdown)
+(defvar eglot-events-buffer-config)
+(defvar eglot-extend-to-xref)
+(defvar eglot-mode-map)
+(declare-function eglot-code-action-organize-imports "eglot")
+(declare-function eglot-code-actions "eglot")
+(declare-function eglot-format-buffer "eglot")
+(declare-function eglot-rename "eglot")
+
+(with-eval-after-load 'eglot
+  (setq eglot-autoshutdown t)
+  ;; don't log every LSP event - the logging adds overhead with chatty
+  ;; servers (set these back when you need to debug an LSP session)
+  (if (boundp 'eglot-events-buffer-config)
+      (setq eglot-events-buffer-config '(:size 0 :format full)) ; newer Eglot
+    (with-suppressed-warnings ((obsolete eglot-events-buffer-size)
+                               (free-vars eglot-events-buffer-size))
+      (setq eglot-events-buffer-size 0)))                       ; older Eglot
+  (setq eglot-extend-to-xref t)
+
+  (define-key eglot-mode-map (kbd "C-c C-l r") #'eglot-rename)
+  (define-key eglot-mode-map (kbd "C-c C-l e") #'eglot-code-actions)
+  (define-key eglot-mode-map (kbd "C-c C-l f") #'eglot-format-buffer)
+  (define-key eglot-mode-map (kbd "C-c C-l o") #'eglot-code-action-organize-imports))
 
 (provide 'prelude-core)
 ;;; prelude-core.el ends here

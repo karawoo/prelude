@@ -7,9 +7,12 @@ updating Prelude, since the latest Prelude code might depend on newer
 versions of the bundled packages than you would currently have
 installed.
 
-If you're doing manual Prelude updates you should always do a package update first.
+If you're doing manual Prelude updates you should always do a
+package update first.
 
-    M-x package-list-packages RET U x
+```text
+M-x package-list-packages RET U x
+```
 
 That's not necessary if you're using `M-x prelude-update`, since it
 will automatically update the installed packages.
@@ -67,9 +70,9 @@ personal Emacs config:
 
 ## Customized C-a behavior
 
-Prelude overrides `C-a` to behave as described
-[here](http://emacsredux.com/blog/2013/05/22/smarter-navigation-to-the-beginning-of-a-line/). If
-you don't like that simply add this to your personal config:
+Prelude overrides `C-a` to behave as described in this
+[blog post about smarter navigation][smart-bol]. If you
+don't like that simply add this to your personal config:
 
 ```emacs-lisp
 (global-set-key [remap move-beginning-of-line]
@@ -79,9 +82,13 @@ you don't like that simply add this to your personal config:
 If you're using term-mode or ansi-term-mode, the above will not
 restore the default behaviour of sending the C-a key sequence directly
 to the terminal. As a workaround, you can remove the C-a binding from
-prelude-mode specifically for these as described
-[here](https://emacsredux.com/blog/2013/09/25/removing-key-bindings-from-minor-mode-keymaps/)
-by adding something like the following to your personal config:
+prelude-mode specifically for these as described in this
+[guide to removing minor mode keybindings][remove-keys]
+by adding something like the following to your personal
+config:
+
+[smart-bol]: http://emacsredux.com/blog/2013/05/22/smarter-navigation-to-the-beginning-of-a-line/
+[remove-keys]: https://emacsredux.com/blog/2013/09/25/removing-key-bindings-from-minor-mode-keymaps/
 
 ```emacs-lisp
 (defun my-term-mode-hook ()
@@ -113,6 +120,21 @@ You can always disable the improved sorting algorithm all together like this:
 
 ```emacs-lisp
 (flx-ido-mode -1)
+```
+
+## Slow startup in GUI Emacs on macOS or Linux
+
+GUI Emacs doesn't inherit the environment of your shell, so Prelude uses
+[exec-path-from-shell](https://github.com/purcell/exec-path-from-shell) to
+fetch `PATH` and friends from it at startup (Emacs started from a terminal
+inherits them already, so this is skipped there). By default that starts an
+interactive login shell, which can take a good part of a second with a heavy
+shell config. If you set `PATH` in your login files (e.g. `~/.zprofile` or
+`~/.bash_profile`), a login shell is enough, and much faster. Add this to your
+`personal/preload` config:
+
+```emacs-lisp
+(setq exec-path-from-shell-arguments '("-l"))
 ```
 
 ## Windows compatibility

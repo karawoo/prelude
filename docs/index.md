@@ -9,7 +9,7 @@ Emacs power users.
 
 !!! Important
 
-    Prelude is compatible **ONLY with GNU Emacs 25.1+**. In general you're
+    Prelude is compatible **ONLY with GNU Emacs 29.1+**. In general you're
     advised to always run Prelude with the latest stable Emacs release.
 
 You can support the development of Prelude via
@@ -54,8 +54,6 @@ Here are some of the essential 3rd party packages that Prelude adds to Emacs:
   (the best git client in the known universe)
 - [git-timemachine](https://codeberg.org/pidu/git-timemachine)
   (navigate quickly through different versions of one file)
-- `nlinum`
-  (line numbers in your buffers)
 - [smartparens](https://github.com/Fuco1/smartparens)
   (powerful package for dealing with expressions and matched
   delimiters in programming languages)
@@ -75,37 +73,34 @@ many more packages available via optional modules.
 
 The following programming languages have enhanced support in Prelude:
 
-- C/C++
+- [C/C++](modules/c.md)
 - [Clojure](modules/clojure.md)
-- CoffeeScript
 - [Common Lisp](modules/common_lisp.md)
-- CSS
+- [CSS](modules/css.md)
 - [Dart](modules/dart.md)
+- [Elixir](modules/elixir.md)
 - [Emacs Lisp](modules/emacs_lisp.md)
-- Erlang
-- Elixir
+- [Erlang](modules/erlang.md)
 - [F#](modules/fsharp.md)
-- Go
-- Haskell
-- JavaScript
-- LaTeX
-- [Lisp Base](modules/lisp.md) (common foundation for Lisp modules)
-- Lua
-- Markdown
+- [Go](modules/go.md)
+- [Haskell](modules/haskell.md)
+- [JavaScript](modules/js.md)
+- [LaTeX](modules/latex.md)
+- [Lua](modules/lua.md)
 - [OCaml](modules/ocaml.md)
-- Org Mode
-- Perl
+- [Perl](modules/perl.md)
 - [Python](modules/python.md)
-- Racket
+- [Racket](modules/racket.md)
 - [Ruby](modules/ruby.md)
 - [Rust](modules/rust.md)
-- Scala
+- [Scala](modules/scala.md)
 - [Scheme](modules/scheme.md)
-- SCSS
-- TypeScript
-- HTML (via `web-mode`)
-- XML
-- YAML
+- [SCSS](modules/scss.md)
+- [Shell](modules/shell.md)
+- [TypeScript](modules/ts.md)
+- [Web/HTML](modules/web.md)
+- [XML](modules/xml.md)
+- [YAML](modules/yaml.md)
 
 On top of this - basic support for many other programming languages
 will be auto-installed when needed (e.g. the first time you open a

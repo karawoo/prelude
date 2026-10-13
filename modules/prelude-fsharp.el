@@ -1,4 +1,4 @@
-;;; prelude-fsharp.el --- Emacs Prelude: F# programming support.
+;;; prelude-fsharp.el --- Emacs Prelude: F# programming support.  -*- lexical-binding: t; -*-
 ;;
 ;; Author: Andre Boechat <andre.boechat@tutanota.com>
 
@@ -27,21 +27,31 @@
 
 ;;; Code:
 
+(defvar inferior-fsharp-program)
+
 (require 'prelude-programming)
-(prelude-require-packages '(fsharp-mode eglot-fsharp))
 
-(with-eval-after-load 'fsharp-mode
-  (defun prelude-fsharp-mode-defaults ()
-    ;; A reasonable default path to the F# compiler and interpreter on
-    ;; Unix-like systems.
-    ;; https://github.com/fsharp/emacs-fsharp-mode#compiler-and-repl-paths
-    (setq inferior-fsharp-program "dotnet fsi --readline-")
-    (require 'eglot-sharp))
+(defun prelude-fsharp-mode-defaults ()
+  ;; Use the .NET CLI to run the F# interactive REPL
+  (setq inferior-fsharp-program "dotnet fsi --readline-")
+  (subword-mode +1)
+  (when (eq prelude-lsp-client 'eglot)
+    (require 'eglot-fsharp))
+  (prelude-lsp-enable))
 
-  (setq prelude-fsharp-mode-hook 'prelude-fsharp-mode-defaults)
+(use-package fsharp-mode
+  :ensure t
+  :hook (fsharp-mode . (lambda ()
+                         (run-hooks 'prelude-fsharp-mode-hook))))
 
-  (add-hook 'fsharp-mode-hook (lambda ()
-                                (run-hooks 'prelude-sharp-mode-hook))))
+;; Auto-configures Eglot to use FsAutoComplete as the F# language
+;; server.  Only needed when Eglot is the LSP client.
+(when (eq prelude-lsp-client 'eglot)
+  (use-package eglot-fsharp
+    :ensure t
+    :defer t))
+
+(add-hook 'prelude-fsharp-mode-hook #'prelude-fsharp-mode-defaults)
 
 (provide 'prelude-fsharp)
 

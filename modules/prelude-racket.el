@@ -1,6 +1,6 @@
-;;; prelude-racket.el --- Emacs Prelude: Racket programming support.
+;;; prelude-racket.el --- Emacs Prelude: Racket programming support.  -*- lexical-binding: t; -*-
 ;;
-;; Copyright © 2011-2025 Bozhidar Batsov
+;; Copyright © 2011-2026 Bozhidar Batsov
 ;;
 ;; Author: Xiongfei Shi <xiongfei.shi@icloud.com>
 ;; URL: https://github.com/bbatsov/prelude
@@ -30,22 +30,31 @@
 
 ;;; Code:
 
-(prelude-require-packages '(racket-mode))
-
 (require 'prelude-lisp)
 
-(with-eval-after-load 'racket-mode
-  (define-key racket-mode-map (kbd "M-RET") 'racket-run)
-  (define-key racket-mode-map (kbd "M-.") 'racket-repl-visit-definition)
+(declare-function racket-unicode-input-method-enable "racket-input")
 
-  ;; Enable the common Lisp coding hook
-  (add-hook 'racket-mode-hook (lambda () (run-hooks 'prelude-lisp-coding-hook)))
+(defun prelude-racket-enable-input-mode ()
+  "Enable the input method for Unicode symbols (e.g., λ, →, ≤)."
+  (if (fboundp 'racket-input-mode)      ; racket-mode 2024-10-15+
+      (racket-input-mode +1)
+    (with-suppressed-warnings ((obsolete racket-unicode-input-method-enable))
+      (racket-unicode-input-method-enable))))
 
-  (add-hook 'racket-mode-hook #'racket-unicode-input-method-enable)
-  (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable))
+(defun prelude-racket-mode-defaults ()
+  (run-hooks 'prelude-lisp-coding-hook)
+  (prelude-racket-enable-input-mode))
 
-(add-to-list 'auto-mode-alist '("\\.rkt?\\'" . racket-mode))
-(add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-mode))
+;; IDE-like Racket support with REPL, docs, and macro expansion
+(use-package racket-mode
+  :ensure t
+  :bind (:map racket-mode-map
+              ("M-RET" . racket-run))
+  :hook ((racket-mode . (lambda ()
+                           (run-hooks 'prelude-racket-mode-hook)))
+         (racket-repl-mode . prelude-racket-enable-input-mode)))
+
+(add-hook 'prelude-racket-mode-hook #'prelude-racket-mode-defaults)
 
 (provide 'prelude-racket)
 

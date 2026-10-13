@@ -2,41 +2,174 @@
 
 # Change log
 
-## master (unreleased)
+## Unreleased
 
 ### New features
 
-- [PR 1432](https://github.com/bbatsov/prelude/pull/1432): Allow directories of custom Emacs Lisp files in `personal/preload`.
-- Enable `org-habits`.
-- Neatly track `TODO` state changes in a drawer (LOGBOOK), thereby improving readability.
-- Add a module to enable Literate Programming (`prelude-literal-programming.el`).
-- Add a Racket module.
-- Add a Lua module.
-- Auto-install `racket-mode` if needed.
-- Add a F# module.
-- Auto-install `use-package`.
-- Add `prelude-vertico` module. Vertico a simpler alternative to `ivy-mode` and supersedes Selectrum.
-- [#1421](https://github.com/bbatsov/prelude/issues/1421): Make it possible to configure the TypeScript format action using `prelude-ts-format-action`.
-- [#1354](https://github.com/bbatsov/prelude/issues/1354): Remove default `C--` and `C-+` keybindings to increase/decrease the font size.
-- Add `prelude-projectile` user option, allowing Projectile integration to be disabled.
-- Add `prelude-hippie-expand` user option, allowing hippie-expand support to be disabled.
+- Add a welcome screen shown on startup (unless Emacs is launched to open specific files). It points you at the essentials (personal config location, how to enable modules, the user manual) and offers quick access to recent files, known projects and bookmarks, plus a rotating tip. Reopen it any time with `M-x prelude-welcome`, or turn it off with `(setq prelude-welcome-screen nil)`.
+- Add `prelude-swift` module: Swift support via the tree-sitter powered `swift-ts-mode` and `sourcekit-lsp` (registered with Eglot, since Eglot has no built-in entry for Swift). Starts an LSP session through the usual `prelude-lsp-enable` abstraction.
+- Add `prelude-mistty` module: a terminal based on [MisTTY](https://github.com/szermatt/mistty), a pure-elisp shell/comint hybrid on top of `term.el` (no native module to compile). Rebinds Prelude's terminal key `C-c t` to `mistty`.
+- Add a `prelude-spell-checker` option to choose between `flyspell` (the default) and [jinx](https://github.com/minad/jinx), a faster libenchant-based spell checker that only checks the visible part of the buffer. Jinx is installed on demand and enabled as a single global mode; set `(setq prelude-spell-checker 'jinx)` in your personal config to opt in (requires libenchant and a C compiler).
+- Add a `prelude-whitespace-cleanup-style` option to choose how whitespace is cleaned on save: `whitespace-cleanup` (the default, tidies the whole file) or [ws-butler](https://github.com/lewang/ws-butler), which trims only the lines you actually edited so saving a file in someone else's project no longer produces noisy whitespace-only diffs. ws-butler is installed on demand.
+- Add `prelude-ai` module: a thin wrapper around [gptel](https://github.com/karthink/gptel) for LLM-backed chat (Claude, GPT, Gemini, Ollama, etc.). Binds `gptel-menu` to `C-c q`. Backends and API keys are configured in personal config -- see the module documentation for examples.
+- Add `prelude-forge` module: enables [Forge](https://github.com/magit/forge) on top of Magit so you can read and reply to GitHub/GitLab/Gitea pull requests and issues without leaving Emacs.
+- Add `prelude-eglot-booster` module: speeds up Eglot via the [emacs-lsp-booster](https://github.com/blahgeek/emacs-lsp-booster) wrapper. The Emacs side ([eglot-booster](https://github.com/jdtsmith/eglot-booster)) is auto-installed via `package-vc-install` when the booster binary is on `PATH`; otherwise the module no-ops.
+- Add `prelude-corfu` module: a modern, lightweight in-buffer completion stack ([corfu](https://github.com/minad/corfu) + [cape](https://github.com/minad/cape)) -- alternative to `prelude-company`. Pairs naturally with the vertico/orderless setup in `prelude-vertico`.
+- Add `prelude-apheleia` module: enables [Apheleia](https://github.com/radian-software/apheleia) globally for async, flicker-free format-on-save (Prettier, Black, Ruff, gofmt, rustfmt, ...). Supersedes the per-language format hooks in modules like `prelude-rust` and `prelude-go`.
+- [#1460](https://github.com/bbatsov/prelude/issues/1460): Load `personal/early-init.el` from Prelude's `early-init.el`, so you can keep your own early startup settings without editing Prelude's files.
+- Warn at startup when modules that do the same job are enabled together (e.g. `prelude-vertico` and `prelude-ivy`, or `prelude-company` and `prelude-corfu`).
+- [#1461](https://github.com/bbatsov/prelude/pull/1461): Add `prelude-smartparens` user option, allowing smartparens support to be disabled.
+- Offer to install a missing tree-sitter grammar the first time a file in that language is opened, and fall back to the classic major mode if it isn't installed. This works the same way on Emacs 29 through 31 and for tree-sitter modes from packages. Control it with `prelude-treesit-auto-install` (`ask`, `always` or `nil`), and install the grammars of all enabled modules with `M-x prelude-treesit-install-grammars`. Prelude's own grammar recipes are pinned to releases close to the ones Emacs 31 picked, and on Emacs 31 Emacs's recipes are used instead.
 
 ### Changes
 
+- Add an `early-init.el` that tunes startup: it raises the GC threshold while Emacs loads (restoring a modest value once startup is over), disables the tool bar via frame parameters so the initial frame is never drawn with one, sets `frame-inhibit-implied-resize`, native-compiles packages at install time (`package-native-compile`), and sets a sane `LANG` for GUI Emacs on macOS (which otherwise starts in the `C` locale and breaks spell-checker dictionaries and subprocess sorting).
+- Modernize the Eglot event-log setting to prefer `eglot-events-buffer-config` on newer Eglot, falling back to the obsolete `eglot-events-buffer-size` on older versions.
+- Bridge Eglot diagnostics into Flycheck via [flycheck-eglot](https://github.com/flycheck/flycheck-eglot) when `prelude-lsp-client` is `eglot`, so LSP diagnostics show up in Prelude's Flycheck UI instead of only through Flymake. Installed on demand; lsp-mode users are unaffected (lsp-mode has its own Flycheck integration).
+- Add [Embark](https://github.com/oantolin/embark) (and `embark-consult`) to `prelude-vertico`: a keyboard-driven context menu bound to `C-.` (`embark-act`), `C-;` (`embark-dwim`) and `C-h B` (`embark-bindings`), with `embark-export` into editable grep/occur buffers. In Flyspell buffers those keys keep their Flyspell auto-correct meaning; Embark still works in the minibuffer and elsewhere.
+- Enable the `vertico-directory` extension in `prelude-vertico`: `RET` descends into the selected directory, `DEL` deletes a whole path component, and `M-DEL` deletes a word of it.
+- Enable `corfu-history-mode` in `prelude-corfu` so recently chosen completion candidates sort first (persisted across sessions via savehist).
+- Set `consult-narrow-key` to `<` in `prelude-vertico`, so you can narrow consult candidates to a single group (e.g. `< b` for buffers in `consult-buffer`).
+- Tidy up `prelude-common-lisp`: drop stale `slime-autodoc-use-multiline-p` setting (the variable was removed from upstream SLIME; modern autodoc honors `eldoc-echo-area-use-multiline-p`), set `inferior-lisp-program` to `sbcl` so `M-x run-lisp` works without SLIME, and add `slime-quicklisp` to `slime-contribs` for Quicklisp integration.
+- Enable `lexical-binding` in all of Prelude's Emacs Lisp files (including the sample `prelude-modules.el`), which silences the missing-cookie warnings Emacs 31 prints on every startup.
+- Modules now `add-hook` their defaults to Prelude's hooks (`prelude-<lang>-mode-hook`, `prelude-lisp-coding-hook`, etc.) instead of `setq`-ing them, so functions you add to those hooks in `personal/preload` are no longer thrown away when the module loads.
+- Stop installing `gist` (unused), and only install `which-key` and `editorconfig` on Emacs 29, since both are built into Emacs 30+.
+- Replace the unmaintained `smartrep` package with a plain transient keymap for the `C-c .` operate-on-number bindings. They work the same way: after the first operation, the operator keys can be repeated without the prefix.
+- Install all of Prelude's packages with `use-package` and `:ensure t`, and deprecate `prelude-require-package` and `prelude-require-packages` in favour of it. `prelude-packages` now starts out empty and gets filled in with every package Prelude ensures (including ones from modules), so `prelude-update-packages` and `prelude-list-foreign-packages` keep working, and your own `use-package :ensure` forms are tracked the same way.
+- Start up a lot faster (about 1.3s down to 0.4s in a terminal with the default modules): the shell environment is only fetched for GUI frames and daemons, packages are no longer initialized twice, and TRAMP, Eglot, calc, crux and the Perl, shell and XML modes are only loaded when they're actually used.
+
+### Bugs fixed
+
+- Update `prelude-helm` to current upstream variable/function names: rename `helm-google-suggest-use-curl-p` to `helm-net-prefer-curl` (deprecated alias since helm 1.7.7), rename `helm-split-window-in-side-p` to `helm-split-window-inside-p` (deprecated alias since helm 2.8.6), drop `helm-ff-file-name-history-use-recentf` (removed from helm; behavior is now unconditional), and drop the `C-c w` binding to `helm-wikipedia-suggest` (function moved to a separate `helm-wikipedia` package).
+- Drop `C-c C-l` binding to `helm-comint-input-ring` in `prelude-helm-everywhere` -- that command was removed from upstream helm.
+- Replace stale `erc-autoaway-use-emacs-idle` setting in `prelude-erc` with `(setq erc-autoaway-idle-method 'emacs)` (the old variable was removed; idle source is now selected via `erc-autoaway-idle-method`).
+- Rebind `M-s m` from removed `consult-multi-occur` to built-in `multi-occur` in `prelude-vertico` (consult dropped the wrapper in favor of the built-in command).
+- [#1450](https://github.com/bbatsov/prelude/issues/1450): Remove broken `slime-complete-symbol-function` setting in `prelude-common-lisp` (referenced an undefined `slime-flex-completions` symbol; the variable itself has been obsolete since 2015).
+- [#1453](https://github.com/bbatsov/prelude/issues/1453): Fix Common Lisp completion in `prelude-common-lisp`: call `slime-setup` so the configured contribs (and `slime-c-p-c-completion-at-point`) actually load, and skip SLIME completion when no Swank session is connected so company no longer errors with a void-function or "Not connected." message.
+- Fix `prelude-ocaml` integration with `neocaml`: hook into `neocaml-base-mode` (so `.mli` files are covered), enable `ocaml-eglot-mode` properly, and call `prelude-lsp-enable` so the LSP server actually starts.
+- Use `ocaml-eglot-mode` instead of the obsolete `ocaml-eglot` alias (renamed in `ocaml-eglot` 1.4.0).
+- Add a temporary `eglot-server-programs` entry for `neocaml` so older `neocaml` versions still get `ocamllsp` started. Can be removed once `neocaml >= 20260331` is widely available on MELPA.
+- Drop `M-g e` and `M-g f` from `prelude-vertico`'s consult bindings so they no longer shadow the avy bindings (`avy-goto-word-0`, `avy-goto-line`) set in core. Bind `consult-compile-error` / `consult-flymake` in your personal config if you want them.
+- [#1454](https://github.com/bbatsov/prelude/issues/1454): Drop stale `tide` references from the docs now that `prelude-ts` uses `typescript-ts-mode` + LSP.
+- [#1462](https://github.com/bbatsov/prelude/issues/1462): Don't break the `prelude-ocaml` mode hook (and with it font-locking and line numbers) when `ocaml-eglot` isn't installed.
+- [#1462](https://github.com/bbatsov/prelude/issues/1462): Refresh the package archives and retry once when installing a package fails, so a stale package cache (listing versions MELPA no longer has) no longer leaves packages uninstalled. Covers `use-package` `:ensure` as well as `prelude-require-package`.
+- Replace obsolete APIs flagged by the byte-compiler: `company-show-numbers` (now `company-show-quick-access`), `helm-projectile-on` (now `helm-projectile-mode`), `racket-unicode-input-method-enable` (now `racket-input-mode`), `erc-server-buffer-p` on ERC 5.6+, and the `racket-repl-visit-definition` binding on `M-.` (racket-mode uses xref now, so the global `M-.` already does the right thing). Drop the redundant `uniquify-after-kill-buffer-p` setting, which is on by default and obsolete in Emacs 31.
+- Fix package installs failing for the rest of the session after installing a package whose own code runs `use-package` with `:ensure` at compile time (such as recent SLIME with its `slime-xterm-color` contrib). The package name was recorded with its source position, which broke every later install on Emacs 30 and 31.
+- Don't break `org-mode` in `prelude-literate-programming` when Jupyter isn't installed: `ob-ipython` queried Jupyter for its kernels every time an Org buffer was opened and signaled an error if it wasn't there.
+- Make `prelude-update` stop with an error (showing the `git` output) when the checkout can't be fast-forwarded, instead of reporting success, and stop it from changing the current buffer's directory.
+- Don't install LSP-client-specific packages (`lsp-dart`, `ocaml-eglot`, `eglot-fsharp`) for users of the other LSP client.
+- Keep installing the packages of `use-package :ensure` forms after Prelude gets byte-compiled (as `prelude-update` does). `use-package` ensures packages at compile time when a file is compiled, so the compiled files never installed missing packages (and installed conditional ones regardless of their condition).
+
+## 2.1.0 (2026-03-29)
+
+### New features
+
+- Add `cmake-mode` package to `prelude-c`.
+- Set `c-ts-mode-indent-style` to `k&r` so tree-sitter C/C++ modes match the classic cc-mode indentation style.
+- Add `auto-mode-alist` entries for Eask and Eldev build tool files in `prelude-emacs-lisp`.
+- Add Super-based (`s-`) keybindings on macOS for smartparens structural editing commands (splice, slurp, barf, splice-killing).
+
+### Changes
+
+- **Switch smartparens from paredit to default keybinding set.** This frees `M-s` (was `sp-splice-sexp`, shadowed `search-map`) and `M-?` (was `sp-convolute-sexp`, shadowed `xref-find-references`). Splice is now on `M-D`, convolute is unbound, splice-killing moves to `C-M-<backspace>` / `C-M-<delete>`.
+- Convert all language modules to `use-package`: C, Clojure, Common Lisp, CSS, Dart, Elixir, Erlang, Emacs Lisp, F#, Go, Haskell, LaTeX, Lua, OCaml, Racket, Ruby, Rust, Scala, Scheme, SCSS, Web, YAML.
+- Remove `prelude-coffee` module (CoffeeScript is no longer actively developed). The module file is kept as a deprecation stub so existing configs don't break.
+- Remove `dune` and `utop` packages from `prelude-ocaml` (both are provided by `neocaml` out of the box).
+- Load `ocaml-eglot` in `prelude-ocaml` only when `prelude-lsp-client` is set to `eglot`.
+- Default to SBCL on all platforms in `prelude-common-lisp` (was Clozure CL on macOS).
+- Disable `slime-enable-evaluate-in-emacs` by default in `prelude-common-lisp` (security risk).
+- Add missing `prelude-lsp-enable` call in `prelude-fsharp`.
+- Guard `eglot-fsharp` behind `prelude-lsp-client` check in `prelude-fsharp`.
+- Use `major-mode-remap-alist` instead of `defalias` for cperl-mode in `prelude-perl`.
+- Remove `C-c C-l` binding from `prelude-lua` (conflicts with Eglot prefix).
+- Load `company-auctex` only when company is present in `prelude-latex`.
+- Move Makefile configuration from `prelude-c` to `prelude-programming` (benefits all programming modules).
+- Install `dart-mode` explicitly in `prelude-dart` instead of relying on auto-install.
+
+### Bugs fixed
+
+- [#1400](https://github.com/bbatsov/prelude/issues/1400): Fix `M-s` (`search-map`) and `M-?` (`xref-find-references`) being shadowed by smartparens paredit keybindings.
+
+## 2.0.0 (2026-03-26)
+
+### New features
+
+- **Prelude now requires Emacs 29.1 or newer.** This unlocks built-in tree-sitter, Eglot, `use-package`, and many other modern Emacs features.
+- Add `prelude-lsp-client` user option to switch between Eglot (default, built-in) and lsp-mode as the LSP client. All language modules use the configured client automatically.
+- Add tree-sitter support for C/C++, Go, Python, JavaScript, TypeScript (including TSX), Ruby, Elixir, Shell, YAML, and CSS. Tree-sitter modes are used automatically when the grammar is available, with graceful fallback to legacy modes.
+- Add `prelude-treesit-remap` helper to safely remap modes to their tree-sitter equivalents, with proper guards for grammar availability.
+- Add LSP support to Python, JavaScript, TypeScript, C/C++, Ruby, Elixir, Haskell, Lua, and Erlang modules.
+- Add Eglot keybindings under `C-c C-l` prefix (rename, code actions, format, organize imports), consistent with lsp-mode bindings.
+- Add `prelude-vertico` module. Vertico is a simpler alternative to `ivy-mode` and supersedes Selectrum.
+- Add `marginalia` to `prelude-vertico` for rich annotations in the minibuffer.
+- Add a Racket module.
+- Add a Lua module.
+- Add a F# module.
+- Add a module to enable Literate Programming (`prelude-literal-programming.el`).
+- [PR 1432](https://github.com/bbatsov/prelude/pull/1432): Allow directories of custom Emacs Lisp files in `personal/preload`.
+- Add `prelude-projectile` user option, allowing Projectile integration to be disabled.
+- Add `prelude-hippie-expand` user option, allowing hippie-expand support to be disabled.
+- [#1421](https://github.com/bbatsov/prelude/issues/1421): Make it possible to configure the TypeScript format action using `prelude-ts-format-action`.
+- [#1354](https://github.com/bbatsov/prelude/issues/1354): Remove default `C--` and `C-+` keybindings to increase/decrease the font size.
+- Enable `pixel-scroll-precision-mode` for smooth scrolling on graphical displays.
+- Enable `isearch-lazy-count` for showing match counts during search and query-replace.
+- Enable `org-habits`.
+- Add `org-capture` binding (`C-c c`) and enable `org-indent-mode` by default.
+- Neatly track `TODO` state changes in a drawer (LOGBOOK), thereby improving readability.
+- Enable `subword-mode` in C, Dart, F#, LaTeX, OCaml, and Perl modules for better CamelCase navigation.
+- Add indentation defaults and modern template file extensions (`.vue`, `.svelte`, `.astro`, etc.) to `prelude-web`.
+- Auto-install `racket-mode` if needed.
+
+### Changes
+
+- Modernize `prelude-ocaml` to use `neocaml` (tree-sitter), `eglot`, and `ocaml-eglot` instead of `tuareg`, `merlin`, and `flycheck-ocaml`.
+- Modernize `prelude-python` to use LSP instead of `anaconda-mode`.
+- Modernize `prelude-js` to use `js-ts-mode` and LSP instead of `js2-mode`.
+- Modernize `prelude-ts` to use `typescript-ts-mode` and LSP instead of `tide`.
+- Rename `prelude-lsp` module to `prelude-lsp-mode` for clarity. It is now loaded on demand only when `prelude-lsp-client` is set to `lsp-mode`.
+- Remove `prelude-selectrum` module (Selectrum is unmaintained, use Vertico instead).
+- Remove `nlinum` package in favor of built-in `display-line-numbers-mode`.
+- Remove `anzu` package in favor of built-in `isearch-lazy-count`.
+- Remove `epl` package in favor of built-in `package-upgrade-all` / `package-upgrade`.
+- Remove `alchemist` from `prelude-elixir` (unmaintained since 2018).
+- Remove `go-projectile` from `prelude-go` (unmaintained).
+- Replace `defadvice` with modern `define-advice` / `advice-add` throughout.
+- Replace deprecated `point-at-eol` with `line-end-position` in `prelude-evil`.
+- Replace deprecated `linum-mode` ex command with `display-line-numbers-mode` in `prelude-evil`.
+- Remove obsolete magit keymaps from `prelude-evil` (`magit-commit-mode-map`, `magit-branch-manager-mode-map`).
+- Switch SLIME completion from `slime-fuzzy` to `slime-flex` in `prelude-common-lisp`.
+- Use `use-short-answers` instead of `fset` hack for y/n prompts.
+- Use built-in `ansi-color-compilation-filter` for compilation buffer colorization.
+- Use built-in `use-package` (no longer installed as a package).
+- Use `use-package` to defer loading of interactive packages, improving startup time.
+- Remove redundant `require` calls to improve startup time.
+- Remove `C-x p` binding to `proced` (conflicts with built-in `project.el` prefix).
+- Bind `C-x C-m` to `execute-extended-command` instead of `smex`.
 - Remove redundant addition to `auto-mode-alist` for Markdown
   (note: this reverts the default to `markdown-mode` instead of `gfm-mode`).
 - Bind all essential `avy` commands to their recommended keybindings.
 - Remove `company-lsp`.
-- Replace `yank-pop` key-binding to `counse-yank-pop` for `ivy-mode`.
-- The keybinding for `proced` is now enabled unconditionally.
+- Replace `yank-pop` key-binding to `counsel-yank-pop` for `ivy-mode`.
 - Replace prelude-go backend with `lsp` instead of unmaintained tools.
+- Restore format-on-save for Go via `gofmt-before-save`.
 - Use `rust-analyzer` as language server for prelude-rust and provide nicer syntax highlighting with `tree-sitter`.
-- Use `js2-mode` for Node.js specific `.cjs` and `.mjs` extensions.
 - Add `prelude-undo-tree` custom variable: allows user disable
   undo-tree integration. Enabled by default to maintain backward-compatibility.
+- Disable ERC module by default and remove Freenode reference.
+- Use HTTPS for MELPA on all platforms.
+- Guard `set-fontset-font` with `display-graphic-p` to avoid errors in terminal Emacs.
+- Switch docs theme from ReadTheDocs to Material for MkDocs.
+- CI now tests on multiple Emacs versions (29.x, 30.x).
 
 ### Bugs fixed
 
+- Fix hook variable name mismatch in `prelude-fsharp` (`prelude-sharp-mode-hook` → `prelude-fsharp-mode-hook`).
+- Fix duplicate `zlogin` entry and wrong comment in `prelude-shell`.
+- Fix wrong header comment in `prelude-ocaml` (said "Perl").
+- Fix spurious `(interactive)` in `prelude-ts-mode-defaults`.
+- Fix duplicate `auto-mode-alist` entries in `prelude-racket`.
+- [#1445](https://github.com/bbatsov/prelude/issues/1445): Fix `prelude-rust` failing to load due to tree-sitter dependency issue.
+- Fix wrong hook name in `prelude-rust`.
 - [PR 1433](https://github.com/bbatsov/prelude/pull/1433): Remove a duplicate `when` call in `modules/prelude-helm-everywhere.el` causing an emacs init error when `prelude-helm-everywhere` is enabled.
 - Fix `company` still being visible in the mode line.
 - [#1335](https://github.com/bbatsov/prelude/issues/1335): Workaround
@@ -44,9 +177,9 @@
 - Fix **Edit on GitHub** link in ReadTheDocs site.
 - Fix fall back to sample `prelude-modules.el` not working if user has installed to non-default location.
 - Stop requiring `helm-config` since upstream has removed the module.
-- Require `typescript-mode` using `prelude-require-packages` to avoid error upon inclusion in `personal/prelude-modules.el`.
 - Turn off `super-save` in `rust-mode` to prevent severe hangs during autocomplete.
 - Update `prelude-dart.el` to use `lsp-dart-dap-setup` instead of deprecated `dap-dart-setup` function.
+- Fix stale references and broken config across modules.
 
 ## 1.1.0 (2021-02-14)
 

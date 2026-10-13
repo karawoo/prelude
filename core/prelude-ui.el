@@ -1,6 +1,6 @@
-;;; prelude-ui.el --- Emacs Prelude: UI optimizations and tweaks.
+;;; prelude-ui.el --- Emacs Prelude: UI optimizations and tweaks.  -*- lexical-binding: t; -*-
 ;;
-;; Copyright © 2011-2025 Bozhidar Batsov
+;; Copyright © 2011-2026 Bozhidar Batsov
 ;;
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/prelude
@@ -31,11 +31,8 @@
 
 ;;; Code:
 
-;; the toolbar is just a waste of valuable screen estate
-;; in a tty tool-bar-mode does not properly auto-load, and is
-;; already disabled anyway
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
+;; the toolbar is disabled via `default-frame-alist' in early-init.el,
+;; so the initial frame is never drawn with one
 
 (when prelude-minimalistic-ui
   (menu-bar-mode -1))
@@ -54,6 +51,9 @@
       scroll-conservatively 100000
       scroll-preserve-screen-position 1)
 
+;; enable smooth pixel scrolling on graphical displays
+(pixel-scroll-precision-mode t)
+
 ;; mode line settings
 (line-number-mode t)
 (column-number-mode t)
@@ -61,15 +61,10 @@
 
 ;; show line numbers at the beginning of each line
 (unless prelude-minimalistic-ui
-  ;; there's a built-in linum-mode, but we're using
-  ;; display-line-numbers-mode or nlinum-mode,
-  ;; as it's supposedly faster
-  (if (fboundp 'global-display-line-numbers-mode)
-      (global-display-line-numbers-mode)
-    (global-nlinum-mode t)))
+  (global-display-line-numbers-mode))
 
 ;; enable y/n answers
-(fset 'yes-or-no-p 'y-or-n-p)
+(setq use-short-answers t)
 
 ;; more useful frame title, that show either a file or a
 ;; buffer name (if the buffer isn't visiting a file)
@@ -79,9 +74,18 @@
                                           "%b"))))
 
 ;; use zenburn as the default theme
+(use-package zenburn-theme
+  :ensure t
+  :defer t)
+
 (when prelude-theme
   (load-theme prelude-theme t))
 
+
+;; built into Emacs 30+
+(use-package which-key
+  :ensure t
+  :defer t)
 
 ;; NOTE(@lerax): dom 01 jun 2025 12:42:24
 ;; helm-descbinds became incompatible with which-key-mode ins 202402XX version
