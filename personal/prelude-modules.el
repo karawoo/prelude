@@ -1,4 +1,4 @@
-;;; Uncomment the modules you'd like to use and restart Prelude afterwards
+;;; Uncomment the modules you'd like to use and restart Prelude afterwards  -*- lexical-binding: t; -*-
 
 ;; Emacs IRC client
 (require 'prelude-erc)
