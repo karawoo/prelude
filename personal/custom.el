@@ -44,6 +44,7 @@
 
 
 (prelude-require-packages '(anzu
+                            apheleia
                             browse-at-remote
                             color-theme-sanityinc-tomorrow
                             ein
@@ -396,33 +397,28 @@ With prefix ARG ask for extra args."
              :config
              (setq xterm-color-use-bold t))
 
+;; enable lsp-mode
+(add-hook 'ess-r-mode-hook #'lsp-deferred)
+
+;; use ry as the languageserver
 (with-eval-after-load "lsp-mode"
   (lsp-register-client
    (make-lsp-client
-    :new-connection (lsp-stdio-connection '("roughly" "server" "--experimental-features" "all"))
+    :new-connection (lsp-stdio-connection '("ry" "server"))
     :major-modes '(ess-r-mode)
     :priority 1
-    :server-id 'roughly-language-server))
-  (setq lsp-r-path "~/.cargo/bin/roughly")
+    :server-id 'ry-language-server))
+  (setq lsp-disabled-clients '(lsp-r)))
 
-  ;; override the default R language server
-  (setq lsp-disabled-clients '(lsp-r))
-
-  ;; ensure roughly is used for R files
-  (add-to-list 'lsp-language-id-configuration '(ess-r-mode . "r")))
-
-;; enable lsp for R files
-(add-hook 'ess-r-mode-hook #'lsp-deferred)
-
-;; add format-on-save for R files
-(with-eval-after-load "ess"
-  (defun enable-lsp-format-before-save ()
-    "Enable LSP format before save for the current buffer."
-    (interactive)
-    (add-hook 'before-save-hook #'lsp-format-buffer nil t))
-
-  ;; Add the hook to ess-r-mode
-  (add-hook 'ess-r-mode-hook #'enable-lsp-format-before-save))
+;; air formats R files. apheleia runs it on save, outside the LSP, so an
+;; external edit cannot interrupt formatting. The formatter edits a temp copy
+;; in place; apheleia then applies a minimal patch to the buffer.
+(use-package apheleia
+  :config
+  (setf (alist-get 'air apheleia-formatters)
+        '("air" "format" inplace))
+  (setf (alist-get 'ess-r-mode apheleia-mode-alist) 'air)
+  (add-hook 'ess-r-mode-hook #'apheleia-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
