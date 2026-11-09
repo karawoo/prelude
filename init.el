@@ -1,6 +1,6 @@
-;;; init.el --- Prelude's configuration entry point.
+;;; init.el --- Prelude's configuration entry point.  -*- lexical-binding: t; -*-
 ;;
-;; Copyright (c) 2011-2025 Bozhidar Batsov
+;; Copyright (c) 2011-2026 Bozhidar Batsov
 ;;
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/prelude
@@ -45,8 +45,8 @@
 
 (message "[Prelude] Prelude is powering up... Be patient, Master %s!" prelude-user)
 
-(when (version< emacs-version "25.1")
-  (error "[Prelude] Prelude requires GNU Emacs 25.1 or newer, but you're running %s" emacs-version))
+(when (version< emacs-version "29.1")
+  (error "[Prelude] Prelude requires GNU Emacs 29.1 or newer, but you're running %s" emacs-version))
 
 ;; Always load newest byte code
 (setq load-prefer-newer t)
@@ -65,13 +65,15 @@ Users of Emacs Prelude are encouraged to keep their personal configuration
 changes in this directory.  All Emacs Lisp files there are loaded automatically
 by Prelude.")
 (defvar prelude-personal-preload-dir (expand-file-name "preload" prelude-personal-dir)
-  "This directory is for your personal configuration, that you want loaded before Prelude.")
+  "This directory is for personal configuration that's loaded before Prelude.")
 (defvar prelude-vendor-dir (expand-file-name "vendor" prelude-dir)
   "This directory houses packages that are not yet available in ELPA (or MELPA).")
 (defvar prelude-savefile-dir (expand-file-name "savefile" user-emacs-directory)
   "This folder stores all the automatically generated save/history-files.")
 (defvar prelude-modules-file (expand-file-name "prelude-modules.el" prelude-personal-dir)
   "This file contains a list of modules that will be loaded by Prelude.")
+(defvar prelude-personal-early-init-file (expand-file-name "early-init.el" prelude-personal-dir)
+  "Your personal early init file, loaded from Prelude's early-init.el.")
 (defvar prelude-override-package-user-dir t
   "By default prelude installs downloaded packages in <prelude-dir>/elpa.
    Set to nil to override this behaviour")
@@ -94,9 +96,8 @@ by Prelude.")
 (add-to-list 'load-path prelude-vendor-dir)
 (prelude-add-subfolders-to-load-path prelude-vendor-dir)
 
-;; reduce the frequency of garbage collection by making it happen on
-;; each 50MB of allocated data (the default is on every 0.76MB)
-(setq gc-cons-threshold 50000000)
+;; the garbage collection threshold is tuned in early-init.el (raised
+;; during startup, restored to a modest value once startup is over)
 
 ;; warn when opening files bigger than 100MB
 (setq large-file-warning-threshold 100000000)
@@ -113,9 +114,11 @@ by Prelude.")
 (require 'prelude-custom)  ;; Needs to be loaded before core, editor and ui
 (require 'prelude-ui)
 (require 'prelude-core)
+(require 'prelude-treesit)
 (require 'prelude-mode)
 (require 'prelude-editor)
 (require 'prelude-global-keybindings)
+(require 'prelude-welcome)
 
 ;; macOS specific settings
 (when (eq system-type 'darwin)
@@ -143,23 +146,19 @@ by Prelude.")
   (message "[Prelude] You should copy this file to your personal configuration folder and tweak it to your liking")
   (load (expand-file-name "sample/prelude-modules.el" prelude-dir)))
 
+(prelude-check-module-conflicts)
+
 ;; config changes made through the customize UI will be stored here
 (setq custom-file (expand-file-name "custom.el" prelude-personal-dir))
 
 ;; load the personal settings (this includes `custom-file')
 (when (file-exists-p prelude-personal-dir)
   (message "[Prelude] Loading personal configuration files in %s..." prelude-personal-dir)
-  (mapc 'load (delete
-               prelude-modules-file
-               (directory-files prelude-personal-dir 't "^[^#\.].*\\.el$"))))
+  (mapc 'load (seq-difference
+               (directory-files prelude-personal-dir 't "^[^#\.].*\\.el$")
+               (list prelude-modules-file prelude-personal-early-init-file))))
 
 (message "[Prelude] Prelude is ready to do thy bidding, Master %s!" prelude-user)
-
-;; Patch security vulnerability in Emacs versions older than 25.3
-(when (version< emacs-version "25.3")
-  (with-eval-after-load "enriched"
-    (defun enriched-decode-display-prop (start end &optional param)
-      (list start end))))
 
 (prelude-eval-after-init
  ;; greet the use with some useful tip

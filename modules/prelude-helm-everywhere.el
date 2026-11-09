@@ -1,6 +1,6 @@
-;;; prelude-helm-everywhere.el --- Enable Helm everywhere
+;;; prelude-helm-everywhere.el --- Enable Helm everywhere  -*- lexical-binding: t; -*-
 ;;
-;; Copyright © 2014-2025 Tu, Do Hoang
+;; Copyright © 2014-2026 Tu, Do Hoang
 ;;
 ;; Author: Tu, Do Hoang (tuhdo1710@gmail.com)
 ;; URL: https://github.com/bbatsov/prelude
@@ -34,6 +34,8 @@
 (require 'prelude-helm)
 (require 'helm-eshell)
 
+(defvar eshell-mode-map)
+
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "C-x C-m") 'helm-M-x)
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
@@ -49,22 +51,19 @@
 
 (define-key isearch-mode-map (kbd "C-o") 'helm-occur-from-isearch)
 
-;; shell history.
-(define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
-
 ;; use helm to list eshell history
 (add-hook 'eshell-mode-hook
           #'(lambda ()
               (substitute-key-definition 'eshell-list-history 'helm-eshell-history eshell-mode-map)))
 
-(substitute-key-definition 'find-tag 'helm-etags-select global-map)
-
-(helm-descbinds-mode)
 (helm-mode 1)
 
 (when prelude-projectile
       ;; enable Helm version of Projectile with replacment commands
-      (helm-projectile-on))
+      (if (fboundp 'helm-projectile-mode) ; helm-projectile 1.7.0+
+          (helm-projectile-mode +1)
+        (with-suppressed-warnings ((obsolete helm-projectile-on))
+          (helm-projectile-on))))
 
 (provide 'prelude-helm-everywhere)
 ;; prelude-helm-everywhere.el ends here.

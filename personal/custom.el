@@ -1,3 +1,5 @@
+;;; custom.el --- personal config  -*- lexical-binding: t; -*-
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -154,7 +156,7 @@
 (defun my/beginning-of-sentence-p ()
   "Return  t if point is at the beginning of a sentence."
   (let ((start (point))
-        (beg (save-excuyrsion (forward-sentence) (forward-sentence -1))))
+        (beg (save-excursion (forward-sentence) (forward-sentence -1))))
     (eq start beg)))
 
 (defun my/kill-sentence-dwim ()

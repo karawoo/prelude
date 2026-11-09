@@ -1,6 +1,6 @@
-;;; prelude-vertico.el --- Vertico setup
+;;; prelude-vertico.el --- Vertico setup  -*- lexical-binding: t; -*-
 ;;
-;; Copyright © 2011-2025 Bozhidar Batsov
+;; Copyright © 2011-2026 Bozhidar Batsov
 ;;
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/prelude
@@ -30,7 +30,6 @@
 ;; Boston, MA 02110-1301, USA.
 
 ;;; Code:
-(require 'use-package)
 
 ;; Enable vertico
 (use-package vertico
@@ -50,6 +49,21 @@
   ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
   ;; (setq vertico-cycle t)
   )
+
+;; Smarter path editing in file prompts (ships as part of Vertico):
+;; RET descends into the selected directory instead of opening it in
+;; Dired, DEL deletes a whole directory component at once, and M-DEL
+;; deletes just a word of it.
+(use-package vertico-directory
+  :ensure nil ; comes with vertico
+  :after vertico
+  :bind (:map vertico-map
+              ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word))
+  ;; tidy the shadowed part of the path when you re-root it (e.g. type
+  ;; ~/ or / in the middle of a path)
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
 ;; A few more useful configurations for Vertico
 (use-package emacs
@@ -89,6 +103,12 @@
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
 
+;; Rich annotations in the minibuffer (docstrings, file sizes, etc.)
+(use-package marginalia
+  :ensure t
+  :init
+  (marginalia-mode))
+
 (use-package consult
   :ensure t
   :bind (
@@ -104,8 +124,11 @@
          ;; Other custom bindings
          ("M-y" . consult-yank-pop)                ;; orig. yank-pop
          ;; M-g bindings (goto-map)
-         ("M-g e" . consult-compile-error)
-         ("M-g f" . consult-flycheck)
+         ;; Note: M-g e and M-g f are intentionally omitted from consult's
+         ;; recommended bindings to avoid clobbering Prelude's long-standing
+         ;; avy bindings (avy-goto-word-0 and avy-goto-line).  Bind
+         ;; consult-compile-error / consult-flymake in your personal config
+         ;; if you'd rather have them.
          ("M-g g" . consult-goto-line)             ;; orig. goto-line
          ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
          ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
@@ -121,9 +144,35 @@
          ("M-s r" . consult-ripgrep)
          ("M-s l" . consult-line)
          ("M-s L" . consult-line-multi)
-         ("M-s m" . consult-multi-occur)
+         ("M-s m" . multi-occur)
          ("M-s k" . consult-keep-lines)
-         ("M-s u" . consult-focus-lines)))
+         ("M-s u" . consult-focus-lines))
+  :config
+  ;; press < followed by a group key to narrow the candidates to a
+  ;; single group (e.g. in consult-buffer, < b shows only buffers);
+  ;; press < again to remove the narrowing
+  (setq consult-narrow-key "<"))
+
+;; Embark - a keyboard-driven context menu.  Point it at a minibuffer
+;; candidate or a thing at point (a file, a URL, a symbol, ...) and it
+;; offers the actions that make sense for it.
+;;
+;; Note: C-. and C-; are also bound by `flyspell-mode' (auto-correct),
+;; so in buffers where Prelude enables Flyspell those keys keep their
+;; Flyspell meaning; Embark still works everywhere else, including the
+;; minibuffer.  We deliberately leave `prefix-help-command' alone so
+;; which-key keeps handling the C-h-after-a-prefix help.
+(use-package embark
+  :ensure t
+  :bind (("C-." . embark-act)       ;; act on the thing at point / candidate
+         ("C-;" . embark-dwim)      ;; run the default action
+         ("C-h B" . embark-bindings))) ;; browse bindings via completing-read
+
+;; Integration between Embark and Consult, e.g. `embark-export' from a
+;; consult-ripgrep session into an editable grep buffer.
+(use-package embark-consult
+  :ensure t
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
 
 (provide 'prelude-vertico)
 ;;; prelude-vertico.el ends here

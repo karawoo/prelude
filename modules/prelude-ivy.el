@@ -1,6 +1,6 @@
-;;; prelude-ivy.el --- Ivy setup
+;;; prelude-ivy.el --- Ivy setup  -*- lexical-binding: t; -*-
 ;;
-;; Copyright © 2011-2025 Bozhidar Batsov
+;; Copyright © 2011-2026 Bozhidar Batsov
 ;;
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/prelude
@@ -32,14 +32,15 @@
 ;; Boston, MA 02110-1301, USA.
 
 ;;; Code:
-(prelude-require-packages '(ivy swiper counsel))
+(use-package ivy :ensure t :defer t)
+(use-package swiper :ensure t :defer t)
+(use-package counsel :ensure t :defer t)
 
 ;;; Ivy
 ;;
 ;; ivy is a powerful alternative to the popular ido-mode
 
 (require 'ivy)
-(require 'diminish)
 
 (ivy-mode 1)
 (setq ivy-use-virtual-buffers t)

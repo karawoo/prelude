@@ -1,6 +1,6 @@
-;;; prelude-erlang.el --- Emacs Prelude: Erlang programming support.
+;;; prelude-erlang.el --- Emacs Prelude: Erlang programming support.  -*- lexical-binding: t; -*-
 ;;
-;; Copyright © 2011-2025 Gleb Peregud
+;; Copyright © 2011-2026 Gleb Peregud
 ;;
 ;; Author: Gleb Peregud <gleber.p@gmail.com>
 
@@ -29,30 +29,26 @@
 
 ;;; Code:
 
+(defvar erlang-compile-function)
+
 (require 'prelude-programming)
-(prelude-require-packages '(erlang))
 
-(defcustom wrangler-path nil
-  "The location of wrangler elisp directory."
-  :group 'prelude-erlang
-  :type 'string
-  :safe 'stringp)
+(defun prelude-erlang-mode-defaults ()
+  (subword-mode +1)
+  (prelude-lsp-enable)
+  ;; Use Projectile's compile command instead of erlang-mode's default
+  (when prelude-projectile
+    (require 'projectile)
+    (setq erlang-compile-function 'projectile-compile-project)))
 
-(when prelude-projectile
-  (require 'projectile))
+;; Major mode for Erlang.  Install erlang_ls for LSP support:
+;;   https://github.com/erlang-ls/erlang_ls
+(use-package erlang
+  :ensure t
+  :hook (erlang-mode . (lambda ()
+                         (run-hooks 'prelude-erlang-mode-hook))))
 
-(when (require 'erlang-start nil t)
-
-  (with-eval-after-load 'erlang-mode
-    (flymake-mode))
-
-  (when (not (null wrangler-path))
-    (add-to-list 'load-path wrangler-path)
-    (require 'wrangler)))
-
-(when prelude-projectile
-  (add-hook 'erlang-mode-hook (lambda ()
-                                (setq erlang-compile-function 'projectile-compile-project))))
+(add-hook 'prelude-erlang-mode-hook #'prelude-erlang-mode-defaults)
 
 (provide 'prelude-erlang)
 

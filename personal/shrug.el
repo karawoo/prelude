@@ -1,4 +1,4 @@
-;;; shrug.el --- put ¯\_(ツ)_/¯ in your kill ring
+;;; shrug.el --- put ¯\_(ツ)_/¯ in your kill ring  -*- lexical-binding: t; -*-
 
 ;; The MIT License (MIT)
 

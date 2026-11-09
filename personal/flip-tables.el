@@ -1,4 +1,4 @@
-;;; flip-tables.el --- put a flipping table emoji on your kill ring
+;;; flip-tables.el --- put a flipping table emoji on your kill ring  -*- lexical-binding: t; -*-
 (defconst flip-tables-version "0.1")
 ;; Copyright (c)2008 Jonathan Arkell. (by)(nc)(sa)  Some rights reserved.
 ;; Author: Jonathan Arkell <jonnay@jonnay.net>
