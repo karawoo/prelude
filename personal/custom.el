@@ -193,6 +193,12 @@ sentence. Otherwise kill forward but preserve any punctuation at the sentence en
 ;; Turn on smartparens
 (smartparens-global-mode t)
 
+;; Keep M-<backspace> and M-<delete> as word deletion. The smartparens
+;; default bindings use these keys to unwrap sexps.
+(with-eval-after-load 'smartparens
+  (define-key smartparens-mode-map (kbd "M-<backspace>") nil)
+  (define-key smartparens-mode-map (kbd "M-<delete>") nil))
+
 ;; toggle neotree
 (global-set-key (kbd "C-x C-t") 'neotree-toggle)
 
