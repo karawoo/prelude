@@ -551,6 +551,9 @@ With prefix ARG ask for extra args."
 ;; Give me my damn tab completion
 (define-key helm-map (kbd "TAB") 'helm-execute-persistent-action)
 
+(add-to-list 'helm-completing-read-handlers-alist
+             '(crux-rename-buffer-and-file . nil))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;                                Key-chord                               ;;;;
