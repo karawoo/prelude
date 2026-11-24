@@ -20,8 +20,7 @@
  '(org-agenda-files '("~/todo.org"))
  '(package-selected-packages nil)
  '(package-vc-selected-packages
-   '((agentsmith :url "https://github.com/snystrom/agentsmith")
-     (claude-code-ide :url "https://github.com/manzaltu/claude-code-ide.el")))
+   '((agentsmith :url "https://github.com/snystrom/agentsmith")))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(safe-local-variable-directories '("/Users/kara/projects/connect/"))
  '(safe-local-variable-values '((js2-basic-offset . 2))))
@@ -269,16 +268,128 @@ sentence. Otherwise kill forward but preserve any punctuation at the sentence en
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;                             claude-code-ide                            ;;;;
+;;;;                              claude code                               ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package claude-code-ide
-  :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :"56db02ee386d009ddb8b1482310f1f9beeefb810")
-  :bind ("C-c C-'" . claude-code-ide-menu)
-  :config
-  (claude-code-ide-emacs-tools-setup))
+;; Run the claude CLI in a vterm buffer, one per directory.  C-c C-' opens the
+;; session for the current project (or `default-directory' outside a project);
+;; C-u C-c C-' prompts for a directory.  When starting a session in a directory
+;; with past conversations, asks whether to start new, continue the most
+;; recent, or pick one to resume.
 
-(setq claude-code-ide-use-side-window nil)
+(require 'vterm)
+(defvar vterm-shell)
+
+;; Let claude (and anything else) drive this Emacs via `emacsclient --eval'.
+(require 'server)
+(unless (server-running-p) (server-start))
+
+(defvar kw/claude-system-prompt
+  "You are running inside a vterm buffer in the user's Emacs. You can inspect \
+and control that Emacs by running `emacsclient --eval '<elisp>'` from Bash, \
+e.g. to open a file for the user (find-file + goto-line), read flycheck/flymake \
+errors from a buffer, or check the active region. Prefer this over guessing \
+about editor state."
+  "Text appended to claude's system prompt for sessions started from Emacs.")
+
+(defun kw/claude--dir (&optional prompt)
+  "Directory for a claude session: project root, else `default-directory'.
+With PROMPT non-nil, ask for a directory instead."
+  (file-name-as-directory
+   (expand-file-name
+    (cond (prompt (read-directory-name "Start claude in: "))
+          ((project-current) (project-root (project-current)))
+          (t default-directory)))))
+
+(defun kw/claude--buffer-name (dir)
+  (format "*claude:%s*" (abbreviate-file-name (directory-file-name dir))))
+
+(defun kw/claude--live-buffer (dir)
+  "Return the claude buffer for DIR if its process is still running."
+  (let ((buf (get-buffer (kw/claude--buffer-name dir))))
+    (and buf (process-live-p (get-buffer-process buf)) buf)))
+
+(defun kw/claude--has-history-p (dir)
+  "Non-nil if claude has saved conversations for DIR."
+  (let ((hist (expand-file-name
+               (replace-regexp-in-string "[^a-zA-Z0-9]" "-"
+                                         (directory-file-name dir))
+               "~/.claude/projects/")))
+    (and (file-directory-p hist)
+         (directory-files hist nil "\\.jsonl\\'" t 1))))
+
+(defun kw/claude--read-args (dir)
+  "Ask how to start claude in DIR; return extra CLI args."
+  (if (not (kw/claude--has-history-p dir))
+      nil
+    (pcase (car (read-multiple-choice
+                 (format "Claude in %s" (abbreviate-file-name dir))
+                 '((?n "new" "Start a new conversation")
+                   (?c "continue" "Continue the most recent conversation")
+                   (?r "resume" "Pick a past conversation to resume"))))
+      (?n nil)
+      (?c '("--continue"))
+      (?r '("--resume")))))
+
+(defun kw/claude--start (dir &optional args)
+  "Start claude with ARGS in DIR.  Return the (not yet displayed) buffer."
+  (let* ((default-directory dir)
+         (claude (or (executable-find "claude")
+                     (user-error "Can't find `claude' on exec-path")))
+         (args (append (list "--append-system-prompt" kw/claude-system-prompt)
+                       args))
+         (vterm-shell (mapconcat #'shell-quote-argument (cons claude args) " "))
+         (buf (get-buffer-create (kw/claude--buffer-name dir))))
+    (with-current-buffer buf
+      (setq default-directory dir)
+      (vterm-mode))
+    buf))
+
+(defun kw/claude (&optional arg)
+  "Switch to the claude session for this project, starting one if needed.
+With prefix ARG, prompt for the directory."
+  (interactive "P")
+  (let* ((dir (kw/claude--dir arg))
+         (buf (or (kw/claude--live-buffer dir)
+                  (kw/claude--start dir (kw/claude--read-args dir)))))
+    (pop-to-buffer buf)))
+
+(global-set-key (kbd "C-c C-'") #'kw/claude)
+
+;; agentsmith backend.  agentsmith hardcodes `claude-code-ide' as the backend
+;; for new and imported workspaces, so register this config under that name too.
+(defun kw/claude--agentsmith-start (dir)
+  (let ((dir (file-name-as-directory (expand-file-name dir))))
+    (unless (kw/claude--live-buffer dir)
+      (kw/claude--start dir (kw/claude--read-args dir)))))
+
+(defun kw/claude--agentsmith-stop (dir)
+  (when-let* ((buf (kw/claude--live-buffer
+                    (file-name-as-directory (expand-file-name dir)))))
+    (let ((kill-buffer-query-functions nil))
+      (kill-buffer buf))))
+
+(defun kw/claude--agentsmith-open (dir)
+  (let ((dir (file-name-as-directory (expand-file-name dir))))
+    (pop-to-buffer (or (kw/claude--live-buffer dir)
+                       (kw/claude--start dir (kw/claude--read-args dir))))))
+
+(defun kw/claude--agentsmith-detect (dir)
+  (kw/claude--live-buffer (file-name-as-directory (expand-file-name dir))))
+
+(defun kw/claude--agentsmith-status (dir)
+  (if (kw/claude--agentsmith-detect dir) 'ready 'stopped))
+
+(with-eval-after-load 'agentsmith-agent
+  (let ((config '((name          . "Claude (vterm)")
+                  (start         . kw/claude--agentsmith-start)
+                  (stop          . kw/claude--agentsmith-stop)
+                  (open          . kw/claude--agentsmith-open)
+                  (detect-buffer . kw/claude--agentsmith-detect)
+                  (status        . kw/claude--agentsmith-status))))
+    (setf (alist-get 'claude agentsmith-agent-configs) config)
+    (setf (alist-get 'claude-code-ide agentsmith-agent-configs) config))
+  (setq agentsmith-default-agent-backend 'claude))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
